@@ -1,42 +1,43 @@
 import HohmannTransferEnv
 import numpy as np
 import matplotlib.pyplot as plt
+import orbital_mechanics as om
+from tqdm import tqdm
 
 env = HohmannTransferEnv.HohmannTransferEnv()
 env.reset()
-positions_euler = {}
+
 positions_rk45 = {}
-velocities = [np.array(env.state[3]) * i for i in [1.1]]
-t = 3000
-dt = 5
+velocities = [np.array(env.state[3]) * i for i in [0.92, 1, 1.05, 1.1]]
+apsis = {}
+
+t = 10000
+dt = 1
 
 earth = plt.Circle((0, 0), env.earth_radius, facecolor='none', edgecolor='black', linestyle='--')
 fig, ax = plt.subplots()
 ax.add_patch(earth)
 
 print("Calculating trajectories...")
-for v in velocities:
-    print(v)
+for v in tqdm(velocities):
     env.reset(vel=np.array([0, v]))
+    apsis[v] = om.apsis(env.state[:2], env.state[2:4], env.gravity_constant * env.earth_mass)
     positions_rk45[v] = np.empty((t, 2))
-    for i in range(t):
+    for i in tqdm(range(t), leave=False):
         positions_rk45[v][i] = env.state[:2]
         env.step(np.array([0, 0]), dt=dt)
         if np.linalg.norm(env.state[:2]) < env.earth_radius:
             positions_rk45[v] = positions_rk45[v][:i]
             break
-    print("*")
-    env.reset(vel=np.array([0, v]))
-    positions_euler[v] = np.empty((t, 2))
-    for i in range(t):
-        positions_euler[v][i] = env.state[:2]
-        env.euler_step(np.array([0, 0]), dt=dt)
-        if np.linalg.norm(env.state[:2]) < env.earth_radius:
-            positions_euler[v] = positions_euler[v][:i]
-            break
-    
 
-for v in velocities:
-    plt.plot(positions_euler[v][:, 0], positions_euler[v][:, 1])
-    plt.plot(positions_rk45[v][:, 0], positions_rk45[v][:, 1])
+
+s = env.state
+print(apsis[list(apsis.keys())[0]])
+origin = [0], [0] # origin point
+
+cm = plt.get_cmap('gist_rainbow')
+for (i,v) in enumerate(velocities):
+    plt.plot(positions_rk45[v][:, 0], positions_rk45[v][:, 1], color=cm(1.*i/len(velocities)), label="v = " + str(v))
+    plt.scatter(apsis[v][0][0], apsis[v][0][1], color=cm(1.*i/len(velocities)), marker='x')
+    plt.scatter(apsis[v][1][0], apsis[v][1][1], color=cm(1.*i/len(velocities)), marker='o')
 plt.show()
