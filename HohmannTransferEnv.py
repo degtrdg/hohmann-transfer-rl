@@ -31,13 +31,14 @@ class HohmannTransferEnv(gym.Env):
 
     def __init__(self):
         self.min_actions = np.array([0, -np.pi])
-        self.max_actions = np.array([0.1, np.pi])
+        self.max_actions = np.array([1000, np.pi])
         self.min_obs = np.array([-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf])
         self.max_obs = np.array([np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf])
 
         # Might need to scale these values
         self.gravity_constant = 6.67430e-11  # in m^3 kg^-1 s^-2
         self.earth_mass = 5.972e24  # in kg
+        self.mu = self.gravity_constant * self.earth_mass
         self.earth_radius = 6371000  # in m
         self.spaceship_mass = 1000  # in kg, just an assumption
         self.epsilon = 1e-6  # to avoid division by zero
@@ -74,8 +75,6 @@ class HohmannTransferEnv(gym.Env):
 
         # Limit the action space
         action = np.clip(action, self.min_actions, self.max_actions)
-
-        # Seperate position, velocity, and force
         vel = np.array([self.state[2], self.state[3]])
 
         # Calculate the thrust vector
@@ -86,16 +85,25 @@ class HohmannTransferEnv(gym.Env):
                                         [np.sin(action[1]), np.cos(action[1])]]), 
                                         -vel / np.linalg.norm(vel) * action[0])
         
+        # Initial conditions for the ODE solver
         y0 = np.array(self.state[:4])
 
         # My attempt to fix step size in rk45, still slight performance defecit compared to euler, but far more accurate
         sol = solve_ivp(lambda t,y: self.ode(y, thrust), (0, dt), y0, method='RK45', t_eval=[dt], max_step=dt, atol = 1, rtol = 1)
-        self.state[:4] = sol.y[:, 0]
-        self.state[4:6] = om.eccentricity_vector(self.state[:2], self.state[2:4], self.gravity_constant * self.earth_mass)
-        self.state[6] = om.semi_major_axis(self.state[:2], self.state[2:4], self.gravity_constant * self.earth_mass)
 
-        # TODO: Add terminal condition and reward
-        return self.state, 1, False, {}
+        # Update the state
+        self.state[:4] = sol.y[:, 0]
+        self.state[4:6] = om.eccentricity_vector(self.state[:2], self.state[2:4], self.mu)
+        self.state[6] = om.semi_major_axis(self.state[:2], self.state[2:4], self.mu)
+
+        # TODO: Add further terminal conditions and reward
+        reward = 0
+        terminal = False
+        
+        if np.linalg.norm(self.state[:2]) <= self.earth_radius:
+            terminal = True
+
+        return self.state, reward, terminal, {}
 
     def reset(self, pos=None, vel=None, e=None, a=None):
         # Define the initial state here.
@@ -105,11 +113,11 @@ class HohmannTransferEnv(gym.Env):
         if vel is None:
             vel = self.orbit_velocity(pos)
         if e is None:
-            e = np.array([0, 0])
+            e = om.eccentricity_vector(pos, vel, self.mu)
         if a is None:
-            a = np.linalg.norm(pos)
+            a = om.semi_major_axis(pos, vel, self.mu)
 
-        self.state = [pos[0], pos[1], vel[0], vel[1], Fg[0], Fg[1]]
+        self.state = [pos[0], pos[1], vel[0], vel[1], e[0], e[1], a]
         return self.state
 
     def render(self, mode='human'):

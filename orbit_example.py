@@ -12,6 +12,7 @@ velocities = [np.array(env.state[3]) * i for i in [0.92, 1, 1.05, 1.1]]
 apsis = {}
 
 # product of 10,000 is a good time to run for
+# decrease t to increase computation speed
 t = 2000
 dt = 5
 
