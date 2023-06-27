@@ -17,6 +17,12 @@ def eccentricity(pos, vel, mu):
 def semi_major_axis(pos, vel, mu):
     return -mu / (2 * specific_energy(pos, vel, mu))
 
+def argument_of_periapsis(pos, vel, mu):
+    return np.arctan2(eccentricity_vector(pos, vel, mu)[1], eccentricity_vector(pos, vel, mu)[0])
+
+def true_anomaly(pos, vel, mu):
+    return np.arctan2(np.dot(pos, eccentricity_vector(pos, vel, mu)), np.dot(pos, vel))
+
 def apoapsis(pos, vel, mu):
     return semi_major_axis(pos, vel, mu) * (1 + eccentricity(pos, vel, mu))
 
