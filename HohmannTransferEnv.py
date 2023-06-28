@@ -44,8 +44,8 @@ class HohmannTransferEnv(gym.Env):
         self.epsilon = 1e-6  # to avoid division by zero
 
         # Recieved warning about casting float64 to float32, flagging for later
-        self.action_space = spaces.Box(low=self.min_actions, high=self.max_actions, shape=(2,), dtype=np.float64)
-        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(7,), dtype=np.float64)
+        self.action_space = spaces.Box(low=self.min_actions, high=self.max_actions, shape=(2,), dtype=np.float32)
+        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(7,), dtype=np.float32)
 
         self.state = None  # will be initialized in reset method
 
@@ -105,7 +105,7 @@ class HohmannTransferEnv(gym.Env):
 
         return self.state, reward, terminal, {}
 
-    def reset(self, pos=None, vel=None, e=None, a=None):
+    def reset(self, seed=None, options=None, pos=None, vel=None, e=None, a=None):
         # Define the initial state here.
         # The state vector is: [x, y, vx, vy, Fgx, Fgy]
         if pos is None:
@@ -117,10 +117,8 @@ class HohmannTransferEnv(gym.Env):
         if a is None:
             a = om.semi_major_axis(pos, vel, self.mu)
 
-        self.state = [pos[0], pos[1], vel[0], vel[1], e[0], e[1], a]
+        self.state = np.array([pos[0], pos[1], vel[0], vel[1], e[0], e[1], a])
         return self.state
 
     def render(self, mode='human'):
         pass
-
-
