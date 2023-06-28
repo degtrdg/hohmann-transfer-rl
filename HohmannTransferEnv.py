@@ -39,7 +39,7 @@ class HohmannTransferEnv(gym.Env):
 
         # Starting orbit
         self.tbr = tbr()
-        self.r20 = self.tbr.r1*1.3
+        self.r20 = np.array([self.tbr.r1*1.3,0])
         self.v20 = self.tbr.circ_velocity(self.r20)
         self.e0 = om.eccentricity_vector(self.r20, self.v20, self.tbr.mu)
         self.a0 = om.semi_major_axis(self.r20, self.v20, self.tbr.mu)
@@ -60,7 +60,7 @@ class HohmannTransferEnv(gym.Env):
 
         a0 = state[6]
         delta_a = target[1] - a0
-        return np.exp(-(delta_a/((self.max_a*tbr.r1-self.a0)))**2) * np.exp(-(delta_e/(self.max_c/self.max_c))**2)
+        return np.exp(-(delta_a/((self.max_a*self.tbr.r1-self.a0)))**2) * np.exp(-(delta_e/(self.max_c/self.max_c))**2)
 
     def step(self, action, dt=0.01):
         # Limit the action space
