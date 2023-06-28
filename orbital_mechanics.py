@@ -38,8 +38,41 @@ def periapsis_pos(pos, vel, mu, tol=1e-5):
     if eccentricity(pos, vel, mu) < tol:
         return np.array([-periapsis(pos, vel, mu), 0])
     return periapsis(pos, vel, mu) * eccentricity_vector(pos, vel, mu)/np.linalg.norm(eccentricity_vector(pos, vel, mu))
+
 def apsis(pos, vel, mu):
     return (apoapsis_pos(pos, vel, mu), periapsis_pos(pos, vel, mu))
+
+def random_orbit(env, eps=0.01, max_a=6, max_c=3):
+    while True:
+        c = np.random.uniform(env.earth_radius*eps, env.earth_radius*max_c)
+        a = np.random.uniform(env.earth_radius, env.earth_radius*max_a)
+        if a-c > env.earth_radius*2 and a-c < env.earth_radius*3:
+            break
+    e = random_e(c/a)
+    return (a, e)
+
+def random_e(e):
+    theta = np.random.rand()*2*np.pi
+    return np.array([e*np.cos(theta), e*np.sin(theta)])
+
+def orbit_trajectory(a, e):
+    c = a*np.linalg.norm(e)
+    b = np.sqrt(a**2 - c**2)
+    
+    unit_e = e / np.linalg.norm(e)
+    
+    u, v = -c * unit_e
+    t_rot = np.arctan2(unit_e[1], unit_e[0])
+
+    t = np.linspace(0, 2*np.pi, 100)
+    ell = np.array([a*np.cos(t), b*np.sin(t)])
+    r_rot = np.array([[np.cos(t_rot) , -np.sin(t_rot)],[np.sin(t_rot) , np.cos(t_rot)]])
+    
+    ell = np.dot(r_rot,ell)
+    ell[0,:] += u
+    ell[1,:] += v
+    
+    return ell
 
 
 """

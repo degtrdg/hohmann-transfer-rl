@@ -20,7 +20,7 @@ earth = plt.Circle((0, 0), env.earth_radius, facecolor='none', edgecolor='black'
 fig, ax = plt.subplots()
 ax.add_patch(earth)
 
-print("Calculating trajectories...")
+print("Simulating trajectories...")
 for v in tqdm(velocities):
     env.reset(vel=np.array([0, v]))
     apsis[v] = om.apsis(env.state[:2], env.state[2:4], env.gravity_constant * env.earth_mass)
@@ -32,14 +32,11 @@ for v in tqdm(velocities):
             positions_rk45[v] = positions_rk45[v][:i]
             break
 
-
 s = env.state
-print(apsis[list(apsis.keys())[0]])
-origin = [0], [0] # origin point
-
 cm = plt.get_cmap('gist_rainbow')
 for (i,v) in enumerate(velocities):
     plt.plot(positions_rk45[v][:, 0], positions_rk45[v][:, 1], color=cm(1.*i/len(velocities)), label="v = " + str(v))
     plt.scatter(apsis[v][0][0], apsis[v][0][1], color=cm(1.*i/len(velocities)), marker='x')
     plt.scatter(apsis[v][1][0], apsis[v][1][1], color=cm(1.*i/len(velocities)), marker='o')
+plt.grid(color='lightgray',linestyle='--')
 plt.show()

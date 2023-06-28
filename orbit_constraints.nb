@@ -1,0 +1,334 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     12697,        326]
+NotebookOptionsPosition[     11631,        299]
+NotebookOutlinePosition[     12071,        316]
+CellTagsIndexPosition[     12028,        313]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"DynamicModule", "[", 
+  RowBox[{
+   RowBox[{"{", "r", "}"}], ",", 
+   RowBox[{"Column", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Dynamic", "@", 
+       RowBox[{"RegionPlot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             SuperscriptBox["a", "2"], "-", 
+             RowBox[{"2", 
+              SuperscriptBox["c", "2"]}], "+", 
+             FractionBox[
+              SuperscriptBox["c", "4"], 
+              SuperscriptBox["a", "2"]]}], ">", 
+            SuperscriptBox["r", "2"]}], ",", " ", 
+           RowBox[{"0", "<", 
+            FractionBox["c", "a"], "<", "1"}], ",", 
+           RowBox[{"r", "<", 
+            RowBox[{"a", "-", "c"}], "<", 
+            RowBox[{"3", "r"}]}], ",", 
+           RowBox[{"r", "<", "a", "<", 
+            RowBox[{"6", "r"}]}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"c", ",", "0", ",", 
+           RowBox[{"5", "r"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"a", ",", "0", ",", 
+           RowBox[{"7", "r"}]}], "}"}]}], "]"}]}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"r", "=", "3"}], ";", 
+         RowBox[{"Slider", "[", 
+          RowBox[{
+           RowBox[{"Dynamic", "[", "r", "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "5"}], "}"}]}], "]"}]}], ",", 
+        RowBox[{"Dynamic", "[", "r", "]"}]}], "}"}]}], "}"}], "]"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.8968858535505114`*^9, 3.896885862535101*^9}, {
+  3.896885923828013*^9, 3.8968859465620995`*^9}, {3.896886124954221*^9, 
+  3.896886163148343*^9}, {3.8968864290411496`*^9, 3.896886444029464*^9}, {
+  3.8968864906758204`*^9, 3.896886517340912*^9}, {3.8968866975449047`*^9, 
+  3.8968867199166365`*^9}, {3.896886858649601*^9, 3.896886887677229*^9}, {
+  3.8968869524423594`*^9, 3.896886952649859*^9}, {3.896887024942482*^9, 
+  3.8968870721495714`*^9}, {3.896887179144359*^9, 3.8968871792371387`*^9}, {
+  3.896887289896164*^9, 3.8968873286479645`*^9}, {3.8968875967600155`*^9, 
+  3.8968875968546925`*^9}, {3.8968876432641315`*^9, 3.896887643390991*^9}},
+ CellLabel->"In[3]:=",ExpressionUUID->"97ac932c-55e9-44de-b31b-d6785d1308d6"],
+
+Cell[BoxData[
+ DynamicModuleBox[{$CellContext`r$$ = 3}, 
+  TagBox[GridBox[{
+     {
+      DynamicBox[ToBoxes[
+        RegionPlot[{$CellContext`a^2 - 
+           2 $CellContext`c^2 + $CellContext`c^4/$CellContext`a^2 > \
+$CellContext`r$$^2, 0 < $CellContext`c/$CellContext`a < 
+          1, $CellContext`r$$ < $CellContext`a - $CellContext`c < 
+          3 $CellContext`r$$, $CellContext`r$$ < $CellContext`a < 
+          6 $CellContext`r$$}, {$CellContext`c, 0, 
+          5 $CellContext`r$$}, {$CellContext`a, 0, 7 $CellContext`r$$}], 
+        StandardForm],
+       ImageSizeCache->{180., {88., 92.04882854931057}}]},
+     {
+      RowBox[{"{", 
+       RowBox[{
+        SliderBox[Dynamic[$CellContext`r$$], {0, 5}], ",", 
+        DynamicBox[ToBoxes[$CellContext`r$$, StandardForm],
+         ImageSizeCache->{7.147460727766156, {0., 9.}}]}], "}"}]}
+    },
+    DefaultBaseStyle->"Column",
+    GridBoxAlignment->{"Columns" -> {{Left}}},
+    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+   "Column"],
+  DynamicModuleValues:>{}]], "Output",
+ CellChangeTimes->{3.8969123509845905`*^9},
+ CellLabel->"Out[3]=",ExpressionUUID->"0e842b9a-6f5b-4c8c-b5c3-2b69760b1d0d"]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.8968865102777033`*^9, 
+  3.8968865118454847`*^9}},ExpressionUUID->"8e655c58-7ffe-42eb-b255-\
+c23dc1883bfc"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DynamicModule", "[", 
+  RowBox[{
+   RowBox[{"{", "r", "}"}], ",", 
+   RowBox[{"Column", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Dynamic", "@", 
+       RowBox[{"RegionPlot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"r", "<", 
+            RowBox[{"a", "-", "c"}], "<", 
+            RowBox[{"3", "r"}]}], ",", 
+           RowBox[{
+            RowBox[{"2", "r"}], "<", 
+            RowBox[{"a", "-", "c"}], "<", 
+            RowBox[{"3", "r"}]}], ",", 
+           RowBox[{
+            RowBox[{"3", "r"}], "-", "c"}], ",", 
+           RowBox[{
+            RowBox[{"r", "<", "a", "<", 
+             RowBox[{"6", "r"}]}], "&&", 
+            RowBox[{"0", "<", "c", "<", 
+             RowBox[{"3", "r"}]}]}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"c", ",", "0", ",", 
+           RowBox[{"5", "r"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"a", ",", "0", ",", 
+           RowBox[{"7", "r"}]}], "}"}], ",", " ", 
+         RowBox[{"AxesLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"\"\<c\>\"", ",", "\"\<a\>\""}], "}"}]}]}], "]"}]}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"r", "=", "3"}], ";", 
+         RowBox[{"Slider", "[", 
+          RowBox[{
+           RowBox[{"Dynamic", "[", "r", "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "5"}], "}"}]}], "]"}]}], ",", 
+        RowBox[{"Dynamic", "[", "r", "]"}]}], "}"}]}], "}"}], "]"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.8968885079462953`*^9, 3.8968885224074745`*^9}, {
+   3.8968886165458226`*^9, 3.896888708954501*^9}, {3.8968888165170345`*^9, 
+   3.8968888858592963`*^9}, {3.8968889214543004`*^9, 
+   3.8968889606963234`*^9}, {3.8969007501632824`*^9, 
+   3.8969007538302603`*^9}, {3.896901019482465*^9, 3.896901023747323*^9}, 
+   3.896902574647642*^9, {3.8969029644764137`*^9, 3.8969029773215685`*^9}, {
+   3.896918786885598*^9, 3.896918792475692*^9}, {3.896918828375317*^9, 
+   3.8969188481930065`*^9}, {3.896918888989927*^9, 3.8969189196999755`*^9}, {
+   3.8969189609897823`*^9, 3.896918964859598*^9}},
+ CellLabel->"In[16]:=",ExpressionUUID->"306c75a2-d16e-4294-b8f6-8ee1ac2fa254"],
+
+Cell[BoxData[
+ DynamicModuleBox[{$CellContext`r$$ = 3}, 
+  TagBox[GridBox[{
+     {
+      DynamicBox[ToBoxes[
+        RegionPlot[{$CellContext`r$$ < $CellContext`a - $CellContext`c < 
+          3 $CellContext`r$$, 
+          2 $CellContext`r$$ < $CellContext`a - $CellContext`c < 
+          3 $CellContext`r$$, 3 $CellContext`r$$ - $CellContext`c, 
+          
+          And[$CellContext`r$$ < $CellContext`a < 6 $CellContext`r$$, 
+           0 < $CellContext`c < 3 $CellContext`r$$]}, {$CellContext`c, 0, 
+          5 $CellContext`r$$}, {$CellContext`a, 0, 7 $CellContext`r$$}, 
+         AxesLabel -> {"c", "a"}], StandardForm],
+       ImageSizeCache->{180., {88., 92.04882854931057}}]},
+     {
+      RowBox[{"{", 
+       RowBox[{
+        SliderBox[Dynamic[$CellContext`r$$], {0, 5}], ",", 
+        DynamicBox[ToBoxes[$CellContext`r$$, StandardForm],
+         ImageSizeCache->{7.147460727766156, {0., 9.}}]}], "}"}]}
+    },
+    DefaultBaseStyle->"Column",
+    GridBoxAlignment->{"Columns" -> {{Left}}},
+    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+   "Column"],
+  DynamicModuleValues:>{}]], "Output",
+ CellChangeTimes->{
+  3.896888523573762*^9, {3.896888650156249*^9, 3.8968887097349043`*^9}, {
+   3.8968888751981573`*^9, 3.896888886682211*^9}, {3.8968889252778835`*^9, 
+   3.8968889611041813`*^9}, 3.896900754708417*^9, 3.8969010242760067`*^9, 
+   3.8969010960697875`*^9, 3.896902575534147*^9, {3.8969029652238665`*^9, 
+   3.896902978035395*^9}, 3.896912355987565*^9, 3.8969188488629675`*^9, 
+   3.896918890513857*^9, 3.896918920804452*^9, {3.896918961715741*^9, 
+   3.8969189656026654`*^9}},
+ CellLabel->"Out[16]=",ExpressionUUID->"3c5fa66b-8337-4aaa-9ff2-9dfb772cb2d9"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DynamicModule", "[", 
+  RowBox[{
+   RowBox[{"{", "r", "}"}], ",", 
+   RowBox[{"Column", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Dynamic", "@", 
+       RowBox[{"Plot3D", "[", 
+        RowBox[{
+         FractionBox["c", "a"], ",", 
+         RowBox[{"{", 
+          RowBox[{"c", ",", "0", ",", 
+           RowBox[{"3", "r"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"a", ",", 
+           RowBox[{"2", "r"}], ",", 
+           RowBox[{"6", "r"}]}], "}"}], ",", " ", 
+         RowBox[{"RegionFunction", "\[Rule]", 
+          RowBox[{"Function", "[", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"c", ",", "a"}], "}"}], ",", 
+            RowBox[{
+             RowBox[{"2", "r"}], "<", 
+             RowBox[{"a", "-", "c"}], "<", 
+             RowBox[{"3", "r"}]}]}], "]"}]}], ",", " ", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"0", ",", "1"}], "}"}]}], ",", 
+         RowBox[{"AxesLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"\"\<c\>\"", ",", "\"\<a\>\"", ",", "\"\<e\>\""}], 
+           "}"}]}]}], "]"}]}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"r", "=", "3"}], ";", 
+         RowBox[{"Slider", "[", 
+          RowBox[{
+           RowBox[{"Dynamic", "[", "r", "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "5"}], "}"}]}], "]"}]}], ",", 
+        RowBox[{"Dynamic", "[", "r", "]"}]}], "}"}]}], "}"}], "]"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.8968891619896193`*^9, 3.8968892908880816`*^9}, {
+   3.8968894151158504`*^9, 3.8968894479015617`*^9}, {3.8968896509513235`*^9, 
+   3.8968896560675697`*^9}, {3.8968897193220625`*^9, 3.896889738753953*^9}, {
+   3.8969010628077917`*^9, 3.896901062938862*^9}, {3.896901502843743*^9, 
+   3.896901502927647*^9}, 3.8969025878456144`*^9, {3.896903555924218*^9, 
+   3.896903556129848*^9}, 3.896903623685296*^9, {3.896919007373618*^9, 
+   3.896919007471444*^9}},ExpressionUUID->"d3d51647-549b-48c1-ba46-\
+482f8ac45edd"],
+
+Cell[BoxData[
+ DynamicModuleBox[{$CellContext`r$$ = 3}, 
+  TagBox[GridBox[{
+     {
+      DynamicBox[ToBoxes[
+        Plot3D[$CellContext`c/$CellContext`a, {$CellContext`c, 0, 
+          4 $CellContext`r$$}, {$CellContext`a, 2 $CellContext`r$$, 
+          6 $CellContext`r$$}, RegionFunction -> 
+         Function[{$CellContext`c$, $CellContext`a$}, 
+           2 $CellContext`r$$ < $CellContext`a$ - $CellContext`c$ < 
+           3 $CellContext`r$$], PlotRange -> {0, 1}, 
+         AxesLabel -> {"c", "a", "e"}], StandardForm],
+       ImageSizeCache->{180., {77., 82.72340833756036}}]},
+     {
+      RowBox[{"{", 
+       RowBox[{
+        SliderBox[Dynamic[$CellContext`r$$], {0, 5}], ",", 
+        DynamicBox[ToBoxes[$CellContext`r$$, StandardForm],
+         ImageSizeCache->{7.147460727766156, {0., 9.}}]}], "}"}]}
+    },
+    DefaultBaseStyle->"Column",
+    GridBoxAlignment->{"Columns" -> {{Left}}},
+    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+   "Column"],
+  DynamicModuleValues:>{}]], "Output",
+ CellChangeTimes->{
+  3.8968892792911386`*^9, 3.896889454821116*^9, 3.896889656607415*^9, 
+   3.8968897401408463`*^9, 3.8969010739004927`*^9, 3.896901503826532*^9, 
+   3.896902591315618*^9, 3.8969035606978207`*^9, 3.896903640221031*^9, {
+   3.896912363735036*^9, 3.8969123903273416`*^9}},
+ CellLabel->"Out[6]=",ExpressionUUID->"fb1793c4-05a6-4ec4-bdbc-2fae50bf0e70"]
+}, Open  ]]
+},
+WindowSize->{1152., 579.6},
+WindowMargins->{{
+  Automatic, -5.399999999999864}, {-5.399999999999977, Automatic}},
+FrontEndVersion->"13.0 for Microsoft Windows (64-bit) (February 4, 2022)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"b02ebc68-9a14-4398-b0a8-5b3d970bd184"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 2235, 54, 77, "Input",ExpressionUUID->"97ac932c-55e9-44de-b31b-d6785d1308d6"],
+Cell[2818, 78, 1184, 27, 223, "Output",ExpressionUUID->"0e842b9a-6f5b-4c8c-b5c3-2b69760b1d0d"]
+}, Open  ]],
+Cell[4017, 108, 156, 3, 28, "Input",ExpressionUUID->"8e655c58-7ffe-42eb-b255-c23dc1883bfc"],
+Cell[CellGroupData[{
+Cell[4198, 115, 2221, 55, 67, "Input",ExpressionUUID->"306c75a2-d16e-4294-b8f6-8ee1ac2fa254"],
+Cell[6422, 172, 1703, 35, 223, "Output",ExpressionUUID->"3c5fa66b-8337-4aaa-9ff2-9dfb772cb2d9"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8162, 212, 2052, 52, 146, "Input",ExpressionUUID->"d3d51647-549b-48c1-ba46-482f8ac45edd"],
+Cell[10217, 266, 1398, 30, 202, "Output",ExpressionUUID->"fb1793c4-05a6-4ec4-bdbc-2fae50bf0e70"]
+}, Open  ]]
+}
+]
+*)
+
