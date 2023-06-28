@@ -30,6 +30,8 @@ class HohmannTransferEnv(gym.Env):
     Note: The spaceship is considered a reduced mass.
     """
     def __init__(self):
+        # TODO: use a symmetric and normalized Box action space
+        # https://stable-baselines3.readthedocs.io/en/master/guide/rl_tips.html
         self.min_actions = np.array([0, -np.pi])
         self.max_actions = np.array([1000, np.pi])
         self.min_obs = np.array([-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf])
@@ -47,7 +49,6 @@ class HohmannTransferEnv(gym.Env):
         self.min_a = 2
         self.max_c = 2
 
-        # Recieved warning about casting float64 to float32, flagging for later
         self.action_space = spaces.Box(low=self.min_actions, high=self.max_actions, shape=(2,), dtype=np.float64)
         self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(7,), dtype=np.float64)
 
@@ -91,10 +92,15 @@ class HohmannTransferEnv(gym.Env):
         
         if np.linalg.norm(self.state[:2]) <= self.tbr.r1:
             terminal = True
+        
+        # TODO: add truncated var for if it crashes, goes out of bounds, etc.
+        truncated = False
 
-        return self.state, reward, terminal, {}
+        info =  {}
 
-    def reset(self, pos=None, vel=None, e=None, a=None):
+        return self.state, reward, terminal, truncated, info
+
+    def reset(self, seed=None, options=None, pos=None, vel=None, e=None, a=None):
         # Define the initial state here.
         # The state vector is: [x, y, vx, vy, Fgx, Fgy]
         if pos is None:
@@ -108,9 +114,8 @@ class HohmannTransferEnv(gym.Env):
 
         self.state = [pos[0], pos[1], vel[0], vel[1], e[0], e[1], a]
         self.target = om.random_orbit(self.tbr, max_a=self.max_a, min_a=self.min_a, max_c=self.max_c)
-        return self.state
+        info = {}
+        return self.state, info
 
     def render(self, mode='human'):
         pass
-
-
