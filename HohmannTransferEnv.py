@@ -30,6 +30,8 @@ class HohmannTransferEnv(gym.Env):
     """
 
     def __init__(self):
+        # TODO: use a symmetric and normalized Box action space
+        # https://stable-baselines3.readthedocs.io/en/master/guide/rl_tips.html
         self.min_actions = np.array([0, -np.pi])
         self.max_actions = np.array([1000, np.pi])
         self.min_obs = np.array([-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf])
@@ -43,9 +45,8 @@ class HohmannTransferEnv(gym.Env):
         self.spaceship_mass = 1000  # in kg, just an assumption
         self.epsilon = 1e-6  # to avoid division by zero
 
-        # Recieved warning about casting float64 to float32, flagging for later
-        self.action_space = spaces.Box(low=self.min_actions, high=self.max_actions, shape=(2,), dtype=np.float32)
-        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(7,), dtype=np.float32)
+        self.action_space = spaces.Box(low=self.min_actions, high=self.max_actions, shape=(2,), dtype=np.float64)
+        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(7,), dtype=np.float64)
 
         self.state = None  # will be initialized in reset method
 
@@ -102,8 +103,13 @@ class HohmannTransferEnv(gym.Env):
         
         if np.linalg.norm(self.state[:2]) <= self.earth_radius:
             terminal = True
+        
+        # TODO: add truncated var for if it crashes, goes out of bounds, etc.
+        truncated = False
 
-        return self.state, reward, terminal, {}
+        info =  {}
+
+        return self.state, reward, terminal, truncated, info
 
     def reset(self, seed=None, options=None, pos=None, vel=None, e=None, a=None):
         # Define the initial state here.
