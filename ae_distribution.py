@@ -1,15 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import orbital_mechanics as om
-import HohmannTransferEnv as hte
+from TwoBodyReduced import TwoBodyReduced as tbr
 
-env = hte.HohmannTransferEnv()
-env.reset()
+tbr = tbr()
 
 mags = []
 sma = []
 for i in range(10000):
-    a, e = om.random_orbit(env, max_a=4, max_c=3)
+    e, a = om.random_orbit(tbr, max_a=4, min_a=2, max_c=2)
     mags.append(np.linalg.norm(e))
     sma.append(a)
 
@@ -19,5 +18,5 @@ plt.title("Eccentricity")
 plt.subplot(2,1,2)
 plt.hist(sma, bins=100)
 plt.xlabel("Semi-major axis")
-plt.xticks(np.arange(env.earth_radius*2, env.earth_radius*4, env.earth_radius))
+plt.xticks(np.arange(tbr.r1*2, tbr.r1*4, tbr.r1))
 plt.show()

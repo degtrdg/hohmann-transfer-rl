@@ -16,19 +16,19 @@ apsis = {}
 t = 2000
 dt = 5
 
-earth = plt.Circle((0, 0), env.earth_radius, facecolor='none', edgecolor='black', linestyle='--')
+earth = plt.Circle((0, 0), env.tbr.r1, facecolor='none', edgecolor='black', linestyle='--')
 fig, ax = plt.subplots()
 ax.add_patch(earth)
 
 print("Simulating trajectories...")
 for v in tqdm(velocities):
     env.reset(vel=np.array([0, v]))
-    apsis[v] = om.apsis(env.state[:2], env.state[2:4], env.gravity_constant * env.earth_mass)
+    apsis[v] = om.apsis(env.state[:2], env.state[2:4], env.tbr.mu)
     positions_rk45[v] = np.empty((t, 2))
     for i in tqdm(range(t), leave=False):
         positions_rk45[v][i] = env.state[:2]
         env.step(np.array([0, 0]), dt=dt)
-        if np.linalg.norm(env.state[:2]) < env.earth_radius:
+        if np.linalg.norm(env.state[:2]) < env.tbr.r1:
             positions_rk45[v] = positions_rk45[v][:i]
             break
 

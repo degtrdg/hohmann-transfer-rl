@@ -42,14 +42,14 @@ def periapsis_pos(pos, vel, mu, tol=1e-5):
 def apsis(pos, vel, mu):
     return (apoapsis_pos(pos, vel, mu), periapsis_pos(pos, vel, mu))
 
-def random_orbit(env, eps=0.01, max_a=6, max_c=3):
+def random_orbit(tbr, eps=0.01, max_a=4, min_a=2, max_c=2):
     while True:
-        c = np.random.uniform(env.earth_radius*eps, env.earth_radius*max_c)
-        a = np.random.uniform(env.earth_radius, env.earth_radius*max_a)
-        if a-c > env.earth_radius*2 and a-c < env.earth_radius*3:
+        c = np.random.uniform(tbr.r1*eps, tbr.r1*max_c)
+        a = np.random.uniform(tbr.r1*min_a, tbr.r1*max_a)
+        if a-c > tbr.r1*2 and a-c < tbr.r1*3:
             break
     e = random_e(c/a)
-    return (a, e)
+    return (e, a)
 
 def random_e(e):
     theta = np.random.rand()*2*np.pi
