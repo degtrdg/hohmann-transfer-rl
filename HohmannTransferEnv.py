@@ -118,7 +118,8 @@ class HohmannTransferEnv(gym.Env):
             a = om.semi_major_axis(pos, vel, self.mu)
 
         self.state = np.array([pos[0], pos[1], vel[0], vel[1], e[0], e[1], a])
-        return self.state
+        info = {}
+        return self.state, info
 
     def render(self, mode='human'):
         pass
