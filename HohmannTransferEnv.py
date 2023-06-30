@@ -62,7 +62,7 @@ class HohmannTransferEnv(gym.Env):
         delta_a = target[1] - a0
         return np.exp(-(delta_a/((self.max_a*self.tbr.r1-self.a0)))**2) * np.exp(-(delta_e/(self.max_c/self.max_c))**2)
 
-    def step(self, action, dt=0.01):
+    def step(self, action, dt=1):
         # Limit the action space
         action = np.clip(action, self.min_actions, self.max_actions)
         vel = np.array([self.state[2], self.state[3]])

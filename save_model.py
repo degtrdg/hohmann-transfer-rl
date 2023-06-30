@@ -24,7 +24,7 @@ env.reset()
 # Add tensorboard
 model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=logdir)
 
-TIMESTAMPS = 1000
+TIMESTAMPS = 40000
 # Train the model and save it
 
 for i in range(1,30):

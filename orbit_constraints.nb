@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     12697,        326]
-NotebookOptionsPosition[     11631,        299]
-NotebookOutlinePosition[     12071,        316]
-CellTagsIndexPosition[     12028,        313]
+NotebookDataLength[     13241,        333]
+NotebookOptionsPosition[     12175,        306]
+NotebookOutlinePosition[     12615,        323]
+CellTagsIndexPosition[     12572,        320]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -135,10 +135,11 @@ Cell[BoxData[
            RowBox[{
             RowBox[{"3", "r"}], "-", "c"}], ",", 
            RowBox[{
-            RowBox[{"r", "<", "a", "<", 
-             RowBox[{"6", "r"}]}], "&&", 
+            RowBox[{
+             RowBox[{"2", "r"}], "<", "a", "<", 
+             RowBox[{"4", "r"}]}], "&&", 
             RowBox[{"0", "<", "c", "<", 
-             RowBox[{"3", "r"}]}]}]}], "}"}], ",", 
+             RowBox[{"2", "r"}]}]}]}], "}"}], ",", 
          RowBox[{"{", 
           RowBox[{"c", ",", "0", ",", 
            RowBox[{"5", "r"}]}], "}"}], ",", 
@@ -167,8 +168,9 @@ Cell[BoxData[
    3.896902574647642*^9, {3.8969029644764137`*^9, 3.8969029773215685`*^9}, {
    3.896918786885598*^9, 3.896918792475692*^9}, {3.896918828375317*^9, 
    3.8969188481930065`*^9}, {3.896918888989927*^9, 3.8969189196999755`*^9}, {
-   3.8969189609897823`*^9, 3.896918964859598*^9}},
- CellLabel->"In[16]:=",ExpressionUUID->"306c75a2-d16e-4294-b8f6-8ee1ac2fa254"],
+   3.8969189609897823`*^9, 3.896918964859598*^9}, {3.8969195596195717`*^9, 
+   3.8969196085490685`*^9}, {3.8969543206282725`*^9, 3.8969543354058795`*^9}},
+ CellLabel->"In[25]:=",ExpressionUUID->"306c75a2-d16e-4294-b8f6-8ee1ac2fa254"],
 
 Cell[BoxData[
  DynamicModuleBox[{$CellContext`r$$ = 3}, 
@@ -179,9 +181,9 @@ Cell[BoxData[
           3 $CellContext`r$$, 
           2 $CellContext`r$$ < $CellContext`a - $CellContext`c < 
           3 $CellContext`r$$, 3 $CellContext`r$$ - $CellContext`c, 
-          
-          And[$CellContext`r$$ < $CellContext`a < 6 $CellContext`r$$, 
-           0 < $CellContext`c < 3 $CellContext`r$$]}, {$CellContext`c, 0, 
+          And[
+          2 $CellContext`r$$ < $CellContext`a < 4 $CellContext`r$$, 
+           0 < $CellContext`c < 2 $CellContext`r$$]}, {$CellContext`c, 0, 
           5 $CellContext`r$$}, {$CellContext`a, 0, 7 $CellContext`r$$}, 
          AxesLabel -> {"c", "a"}], StandardForm],
        ImageSizeCache->{180., {88., 92.04882854931057}}]},
@@ -204,8 +206,9 @@ Cell[BoxData[
    3.8969010960697875`*^9, 3.896902575534147*^9, {3.8969029652238665`*^9, 
    3.896902978035395*^9}, 3.896912355987565*^9, 3.8969188488629675`*^9, 
    3.896918890513857*^9, 3.896918920804452*^9, {3.896918961715741*^9, 
-   3.8969189656026654`*^9}},
- CellLabel->"Out[16]=",ExpressionUUID->"3c5fa66b-8337-4aaa-9ff2-9dfb772cb2d9"]
+   3.8969189656026654`*^9}, {3.8969195606879683`*^9, 
+   3.8969196095176373`*^9}, {3.8969543215712595`*^9, 3.8969543361835585`*^9}},
+ CellLabel->"Out[25]=",ExpressionUUID->"2982da2c-abe3-4218-ac89-23c419eb1bbd"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -223,11 +226,11 @@ Cell[BoxData[
          FractionBox["c", "a"], ",", 
          RowBox[{"{", 
           RowBox[{"c", ",", "0", ",", 
-           RowBox[{"3", "r"}]}], "}"}], ",", 
+           RowBox[{"2", "r"}]}], "}"}], ",", 
          RowBox[{"{", 
           RowBox[{"a", ",", 
            RowBox[{"2", "r"}], ",", 
-           RowBox[{"6", "r"}]}], "}"}], ",", " ", 
+           RowBox[{"4", "r"}]}], "}"}], ",", " ", 
          RowBox[{"RegionFunction", "\[Rule]", 
           RowBox[{"Function", "[", 
            RowBox[{
@@ -239,7 +242,7 @@ Cell[BoxData[
              RowBox[{"3", "r"}]}]}], "]"}]}], ",", " ", 
          RowBox[{"PlotRange", "\[Rule]", 
           RowBox[{"{", 
-           RowBox[{"0", ",", "1"}], "}"}]}], ",", 
+           RowBox[{"0", ",", "0.5"}], "}"}]}], ",", 
          RowBox[{"AxesLabel", "\[Rule]", 
           RowBox[{"{", 
            RowBox[{"\"\<c\>\"", ",", "\"\<a\>\"", ",", "\"\<e\>\""}], 
@@ -261,8 +264,10 @@ Cell[BoxData[
    3.8969010628077917`*^9, 3.896901062938862*^9}, {3.896901502843743*^9, 
    3.896901502927647*^9}, 3.8969025878456144`*^9, {3.896903555924218*^9, 
    3.896903556129848*^9}, 3.896903623685296*^9, {3.896919007373618*^9, 
-   3.896919007471444*^9}},ExpressionUUID->"d3d51647-549b-48c1-ba46-\
-482f8ac45edd"],
+   3.896919007471444*^9}, {3.8969195856730375`*^9, 3.896919613825334*^9}, {
+   3.8969543030274096`*^9, 3.896954303115466*^9}, {3.8969544620198884`*^9, 
+   3.896954463048625*^9}},
+ CellLabel->"In[26]:=",ExpressionUUID->"d3d51647-549b-48c1-ba46-482f8ac45edd"],
 
 Cell[BoxData[
  DynamicModuleBox[{$CellContext`r$$ = 3}, 
@@ -270,13 +275,13 @@ Cell[BoxData[
      {
       DynamicBox[ToBoxes[
         Plot3D[$CellContext`c/$CellContext`a, {$CellContext`c, 0, 
-          4 $CellContext`r$$}, {$CellContext`a, 2 $CellContext`r$$, 
-          6 $CellContext`r$$}, RegionFunction -> 
+          2 $CellContext`r$$}, {$CellContext`a, 2 $CellContext`r$$, 
+          4 $CellContext`r$$}, RegionFunction -> 
          Function[{$CellContext`c$, $CellContext`a$}, 
            2 $CellContext`r$$ < $CellContext`a$ - $CellContext`c$ < 
-           3 $CellContext`r$$], PlotRange -> {0, 1}, 
+           3 $CellContext`r$$], PlotRange -> {0, 0.5}, 
          AxesLabel -> {"c", "a", "e"}], StandardForm],
-       ImageSizeCache->{180., {77., 82.72340833756036}}]},
+       ImageSizeCache->{180., {78., 82.39542060621272}}]},
      {
       RowBox[{"{", 
        RowBox[{
@@ -293,8 +298,10 @@ Cell[BoxData[
   3.8968892792911386`*^9, 3.896889454821116*^9, 3.896889656607415*^9, 
    3.8968897401408463`*^9, 3.8969010739004927`*^9, 3.896901503826532*^9, 
    3.896902591315618*^9, 3.8969035606978207`*^9, 3.896903640221031*^9, {
-   3.896912363735036*^9, 3.8969123903273416`*^9}},
- CellLabel->"Out[6]=",ExpressionUUID->"fb1793c4-05a6-4ec4-bdbc-2fae50bf0e70"]
+   3.896912363735036*^9, 3.8969123903273416`*^9}, 3.8969190253877954`*^9, {
+   3.896919588328601*^9, 3.8969196144232483`*^9}, 3.896954306791275*^9, 
+   3.8969544637963495`*^9},
+ CellLabel->"Out[26]=",ExpressionUUID->"1602e1a7-a78b-4917-ae5e-87c1fbc8c3b7"]
 }, Open  ]]
 },
 WindowSize->{1152., 579.6},
@@ -321,12 +328,12 @@ Cell[2818, 78, 1184, 27, 223, "Output",ExpressionUUID->"0e842b9a-6f5b-4c8c-b5c3-
 }, Open  ]],
 Cell[4017, 108, 156, 3, 28, "Input",ExpressionUUID->"8e655c58-7ffe-42eb-b255-c23dc1883bfc"],
 Cell[CellGroupData[{
-Cell[4198, 115, 2221, 55, 67, "Input",ExpressionUUID->"306c75a2-d16e-4294-b8f6-8ee1ac2fa254"],
-Cell[6422, 172, 1703, 35, 223, "Output",ExpressionUUID->"3c5fa66b-8337-4aaa-9ff2-9dfb772cb2d9"]
+Cell[4198, 115, 2354, 57, 67, "Input",ExpressionUUID->"306c75a2-d16e-4294-b8f6-8ee1ac2fa254"],
+Cell[6555, 174, 1809, 36, 223, "Output",ExpressionUUID->"2982da2c-abe3-4218-ac89-23c419eb1bbd"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8162, 212, 2052, 52, 146, "Input",ExpressionUUID->"d3d51647-549b-48c1-ba46-482f8ac45edd"],
-Cell[10217, 266, 1398, 30, 202, "Output",ExpressionUUID->"fb1793c4-05a6-4ec4-bdbc-2fae50bf0e70"]
+Cell[8401, 215, 2228, 54, 146, "Input",ExpressionUUID->"d3d51647-549b-48c1-ba46-482f8ac45edd"],
+Cell[10632, 271, 1527, 32, 226, "Output",ExpressionUUID->"1602e1a7-a78b-4917-ae5e-87c1fbc8c3b7"]
 }, Open  ]]
 }
 ]

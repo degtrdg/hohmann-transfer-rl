@@ -35,12 +35,12 @@ e0 = np.array([0, 0])
 a0 = tbr.r1*1.3
 ediff = []
 adiff = []
-for i in range(1000):
+for i in range(500):
     orbit = om.random_orbit(tbr, max_a=4, min_a=2, max_c=2)
     ediff.append(np.linalg.norm(e0 - orbit[0]))
     adiff.append(orbit[1]-a0)
 
-ax.plot(ediff, adiff, 'x', color='black')
+ax.plot(ediff, adiff, 'x', color='black', markersize=2)
 plt.show()
 
 
