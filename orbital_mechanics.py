@@ -55,7 +55,7 @@ def random_e(e):
     theta = np.random.rand()*2*np.pi
     return np.array([e*np.cos(theta), e*np.sin(theta)])
 
-def orbit_trajectory(a, e):
+def orbit_trajectory(e, a):
     c = a*np.linalg.norm(e)
     b = np.sqrt(a**2 - c**2)
     
@@ -73,6 +73,20 @@ def orbit_trajectory(a, e):
     ell[1,:] += v
     
     return ell
+
+def nu(pos):
+    theta = np.arctan2(pos[1], pos[0])
+    if theta < 0:
+        theta += 2*np.pi
+    return theta
+
+def a_constrained_orbit(tbr, r, a, theta=None):
+    if theta is None:
+        theta = np.random.rand()*2*np.pi
+    e_mag = 1 - r/a
+    e = np.array([e_mag*np.cos(theta), e_mag*np.sin(theta)])
+    a = a*tbr.r1
+    return (e, a)
 
 
 """

@@ -60,7 +60,7 @@ class HohmannTransferEnv(gym.Env):
 
         a0 = state[6]
         delta_a = target[1] - a0
-        return np.exp(-(delta_a/((self.max_a*self.tbr.r1-self.a0)))**2) * np.exp(-(delta_e/(self.max_c/self.max_c))**2)
+        return np.exp(-(delta_a/((self.max_a*self.tbr.r1-self.a0)))**2) * np.exp(-(delta_e/(self.max_a/self.max_c))**2)
 
     def step(self, action, dt=1):
         # Limit the action space
@@ -68,16 +68,13 @@ class HohmannTransferEnv(gym.Env):
         vel = np.array([self.state[2], self.state[3]])
 
         # Calculate the thrust vector
-        if np.linalg.norm(vel) < self.tbr.epsilon:
-            thrust = np.array([0, -action[0]])
-        else:
-            thrust = np.matmul(np.array([[np.cos(action[1]), -np.sin(action[1])], 
+        thrust = np.matmul(np.array([[np.cos(action[1]), -np.sin(action[1])], 
                                         [np.sin(action[1]), np.cos(action[1])]]), 
-                                        -vel / np.linalg.norm(vel) * action[0])
+                                        vel / np.linalg.norm(vel) * action[0])
         
         # Initial conditions for the ODE solver
         y0 = np.array(self.state[:4])
-
+        
         # My attempt to fix step size in rk45, still slight performance defecit compared to euler, but far more accurate
         sol = solve_ivp(lambda t,y: self.tbr.ode(y, thrust), (0, dt), y0, method='RK45', t_eval=[dt], max_step=dt, atol = 1, rtol = 1)
 
