@@ -33,4 +33,5 @@ for (i,v) in enumerate(thetas):
     plt.plot(trajectory[0,:], trajectory[1,:], color=cm(1.*i/len(thetas)))
 plt.plot(positions[:, 0], positions[:, 1], color='black')
 plt.grid(color='lightgray',linestyle='--')
+plt.title("Example Targets")
 plt.show()
