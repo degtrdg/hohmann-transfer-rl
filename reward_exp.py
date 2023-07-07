@@ -43,7 +43,3 @@ for i in range(500):
 ax.plot(ediff, adiff, 'x', color='black', markersize=2)
 plt.show()
 
-
-
-
-
