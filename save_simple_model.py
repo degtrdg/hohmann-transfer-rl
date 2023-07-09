@@ -27,7 +27,7 @@ env.reset()
 # model = DQN('MlpPolicy', env, verbose=1, tau=0.9)
 model = PPO('MlpPolicy', env, verbose=1)
 
-TIMESTAMPS = 10000
+TIMESTAMPS = 5000
 # Train the model and save it
 for i in range(1,101):
     model.learn(total_timesteps=TIMESTAMPS, reset_num_timesteps=False, progress_bar=False)
