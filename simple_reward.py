@@ -15,12 +15,16 @@ trajectory = om.orbit_trajectory(env.state[1:3], env.state[3])
 plt.plot(trajectory[0,:], trajectory[1,:], 'black', alpha=1)
 
 t = 0
-max_t = 1700
+burn_start = 100
+max_t = 300
 positions = np.empty((max_t,2))
 states = np.empty((max_t,6))
 actions = np.empty(max_t)
 while True:
-    env.step(1)
+    if t >= burn_start:
+        env.step(1)
+    else:
+        env.step(0)
     if env.state[3] >= env.target_a * env.tbr.r1:
         for i in range(t, max_t):
             env.step(0)
