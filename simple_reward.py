@@ -70,6 +70,8 @@ plt.subplot(2,3,3)
 rewards = np.array([env.reward(states[i,:], target)-actions[i] for i in range(max_t)])
 plt.title("Reward")
 plt.plot(rewards)
+ax2 = plt.twinx()
+ax2.plot(np.cumsum(rewards), color='orange')
 
 # Time to apoapsis
 plt.subplot(2,3,4)
