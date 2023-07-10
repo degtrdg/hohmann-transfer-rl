@@ -12,7 +12,11 @@ env = sbe()
 env.reset()
 
 model_dir = "models/simple/DQN"
+<<<<<<< HEAD
 model = PPO.load(f'{model_dir}/90000')
+=======
+model = PPO.load(f'{model_dir}/230000')
+>>>>>>> c57e42a2c19743e9a3a1acc8cb8e2abe02e5ee6e
 
 # Initial orbit
 trajectory = om.orbit_trajectory(env.state[1:3], env.state[3])
@@ -42,5 +46,9 @@ trajectory = om.orbit_trajectory(env.state[1:3], env.state[3])
 print(env.target_a, env.state[3]/env.tbr.r1)
 print(np.linalg.norm(env.target[0]), np.sqrt(env.state[1]**2 + env.state[2]**2))
 plt.plot(trajectory[0,:], trajectory[1,:], 'cyan', alpha=1)
+<<<<<<< HEAD
 plt.title("Visual Policy Rollout")
 plt.show()
+=======
+plt.show()
+>>>>>>> c57e42a2c19743e9a3a1acc8cb8e2abe02e5ee6e
