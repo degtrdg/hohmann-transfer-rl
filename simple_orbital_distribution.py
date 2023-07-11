@@ -14,7 +14,7 @@ minor_ticks = np.arange(-5*env.tbr.r1, 5*env.tbr.r1, env.tbr.r1)
 major_ticks = np.arange(-5*env.tbr.r1, 5*env.tbr.r1, 5*env.tbr.r1)
 
 for i in tqdm(range(1000)):
-    env.reset()
+    env.reset(theta=None)
     e, a = env.target
     trajectory = om.orbit_trajectory(e, a)
     plt.plot(trajectory[0,:], trajectory[1,:], 'darkorange', alpha=0.01)

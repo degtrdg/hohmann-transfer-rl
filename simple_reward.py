@@ -16,7 +16,7 @@ plt.plot(trajectory[0,:], trajectory[1,:], 'black', alpha=1)
 
 t = 0
 burn_start = 100
-max_t = 300
+max_t = 1700
 positions = np.empty((max_t,2))
 states = np.empty((max_t,6))
 actions = np.empty(max_t)

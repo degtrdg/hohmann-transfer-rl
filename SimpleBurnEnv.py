@@ -13,17 +13,13 @@ class SimpleBurnEnv(gym.Env):
     Observation: 
         Type: Box(7)
         Num     Observation             Min    Max
-        0       True anomaly            -pi    pi
-        1       Eccentricity x          -Inf   Inf
-        2       Eccentricity y          -Inf   Inf
-        3       Semi-major axis         -Inf   Inf
+        0       True anomaly            0      2*pi
+        1       Delta eccentricity x    -1     1
+        2       Delta eccentricity y    -1     1
+        3       Delta semi-major axis   -Inf   Inf
         
         4       Time to apoapsis        0      Inf
         5       Thrust remaining        0      150
-
-        6       Target a                -Inf   Inf
-        7       Target e x              -Inf   Inf
-        8       Target e y              -Inf   Inf
 
     Actions:
         Type: Discrete(2)
@@ -36,8 +32,8 @@ class SimpleBurnEnv(gym.Env):
         # TODO: use a symmetric and normalized Box action space
         # https://stable-baselines3.readthedocs.io/en/master/guide/rl_tips.html
         self.max_action = 1000
-        self.min_obs = np.array([0, -np.inf, -np.inf, -np.inf, 0, 0])
-        self.max_obs = np.array([2*np.pi, np.inf, np.inf, np.inf, np.inf, 150])
+        self.min_obs = np.array([0, -1, -1, -np.inf, 0, 0])
+        self.max_obs = np.array([2*np.pi, 1, 1, np.inf, np.inf, 150])
         
         self.max_t = 10000
         self.t0 = 0
@@ -108,11 +104,7 @@ class SimpleBurnEnv(gym.Env):
         info =  {}
         return self.state, reward, terminal, truncated, info
 
-<<<<<<< HEAD
-    def reset(self, seed=None, options=None, nu=None, e=None, a=None, theta=None):
-=======
     def reset(self, seed=None, options=None, theta=0, thrusts=None):
->>>>>>> c57e42a2c19743e9a3a1acc8cb8e2abe02e5ee6e
         self.t0 = 0
         pos = self.r20
         vel = self.v20
