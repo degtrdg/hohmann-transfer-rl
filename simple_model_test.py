@@ -12,7 +12,7 @@ env = sbe()
 env.reset()
 
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/230000')
+model = PPO.load(f'{model_dir}/5000')
 
 # Initial orbit
 trajectory = om.orbit_trajectory(env.state[1:3], env.state[3])

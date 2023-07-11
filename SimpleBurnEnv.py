@@ -104,7 +104,7 @@ class SimpleBurnEnv(gym.Env):
         info =  {}
         return self.state, reward, terminal, truncated, info
 
-    def reset(self, seed=None, options=None, theta=0, thrusts=None):
+    def reset(self, seed=None, options=None, theta=7*np.pi/4, thrusts=None):
         self.t0 = 0
         pos = self.r20
         vel = self.v20
