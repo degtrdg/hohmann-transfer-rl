@@ -25,6 +25,7 @@ while True:
         env.step(1)
     else:
         env.step(0)
+    env.render()
     if env.state[3] >= env.target_a * env.tbr.r1:
         for i in range(t, max_t):
             env.step(0)

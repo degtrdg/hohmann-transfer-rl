@@ -5,6 +5,8 @@ from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 import orbital_mechanics as om
 from TwoBodyReduced import TwoBodyReduced as tbr
+import pygame
+import sys
 
 class SimpleBurnEnv(gym.Env):
     """
@@ -88,6 +90,16 @@ class SimpleBurnEnv(gym.Env):
         # The initial values of the integrator state and the environment state, set to None as they are initialized in the reset method.
         self.ivp_state = None  
         self.state = None  
+
+        # Initialize Pygame and create the window and surfaces
+        pygame.init()
+        self.scale_factor = 200 / self.a0 # cannot see the orbit without calculating the scale factor; too big
+        self.window_size = (800, 800)  # The size of the window, in pixels
+        self.screen = pygame.display.set_mode(self.window_size)  # The window surface
+        self.background = pygame.Surface(self.window_size)  # The background surface
+
+        # A list to store the past positions of the spaceship
+        self.orbit_points = []
 
     def reward(self, state, target):
         # This is the reward function, which calculates a reward value based on the current state and the target state.
@@ -197,8 +209,32 @@ class SimpleBurnEnv(gym.Env):
         
         info = {}  # The info dictionary can be used to provide additional information about the state of the simulation, but in this case it is empty.
 
+        # Clear the list of past positions
+        self.orbit_points.clear()
+
+        # Draw the Earth and the initial orbit on the background
+        earth_radius = 50  # The radius of the Earth, in pixels
+        # orbit_radius = int(self.a0 * earth_radius)  # The radius of the orbit, in pixels
+        orbit_radius = int(self.a0 * self.scale_factor) # changed this to be able to visualize it; too big otherwise
+        earth_color = (0, 0, 255)  # The color of the Earth (blue)
+        orbit_color = (255, 255, 255)  # The color of the orbit (white)
+        center = (self.window_size[0] // 2, self.window_size[1] // 2)  # The center of the window
+        pygame.draw.circle(self.background, earth_color, center, earth_radius)
+        pygame.draw.circle(self.background, orbit_color, center, orbit_radius, 1)
+
+
         # Return the initial state and the info dictionary.
         return self.state, info
 
     def render(self, mode='human'):
-        pass
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        # Draw the background on the screen
+        self.screen.blit(self.background, (0, 0))
+
+        # Update the display
+        pygame.display.flip()
