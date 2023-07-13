@@ -5,8 +5,6 @@ from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 import orbital_mechanics as om
 from TwoBodyReduced import TwoBodyReduced as tbr
-import pygame
-import sys
 
 class SimpleBurnEnv(gym.Env):
     """
@@ -200,32 +198,9 @@ class SimpleBurnEnv(gym.Env):
         
         info = {}  # The info dictionary can be used to provide additional information about the state of the simulation, but in this case it is empty.
 
-        # Clear the list of past positions
-        self.orbit_points.clear()
-
-        # Draw the Earth and the initial orbit on the background
-        earth_radius = 50  # The radius of the Earth, in pixels
-        # orbit_radius = int(self.a0 * earth_radius)  # The radius of the orbit, in pixels
-        orbit_radius = int(self.a0 * self.scale_factor) # changed this to be able to visualize it; too big otherwise
-        earth_color = (0, 0, 255)  # The color of the Earth (blue)
-        orbit_color = (255, 255, 255)  # The color of the orbit (white)
-        center = (self.window_size[0] // 2, self.window_size[1] // 2)  # The center of the window
-        pygame.draw.circle(self.background, earth_color, center, earth_radius)
-        pygame.draw.circle(self.background, orbit_color, center, orbit_radius, 1)
-
 
         # Return the initial state and the info dictionary.
         return self.state, info
 
     def render(self, mode='human'):
-        # Event handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-        # Draw the background on the screen
-        self.screen.blit(self.background, (0, 0))
-
-        # Update the display
-        pygame.display.flip()
+        pass
