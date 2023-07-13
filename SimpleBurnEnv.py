@@ -166,7 +166,7 @@ class SimpleBurnEnv(gym.Env):
         info =  {}
         return self.state, reward, terminal, truncated, info
 
-    def reset(self, seed=None, options=None, theta=7*np.pi/4, thrusts=None, target=None):
+    def reset(self, seed=None, options=None, theta=None, thrusts=None, target=None):
     # The reset function is called to reset the environment to its initial state.
         self.t0 = 0  # Reset the current time to 0.
 
