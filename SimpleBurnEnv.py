@@ -86,35 +86,27 @@ class SimpleBurnEnv(gym.Env):
         self.target_a = 2
 
         # The initial values of the integrator state and the environment state, set to None as they are initialized in the reset method.
-        self.ivp_state = None  
-        self.state = None  
+        self.ivp_state = None
+        self.orbit_state = None
+        self.state = None
+        self.target = None
 
-    def reward(self, state, target):
+    def reward(self, state):
         # This is the reward function, which calculates a reward value based on the current state and the target state.
         # The reward value is used to guide the spaceship's learning process. 
         # The greater the reward, the more desirable the corresponding action is, from the spaceship's perspective.
 
-        # First, we calculate the spaceship's current eccentricity (e0) from its state.
-        # The eccentricity is represented as a two-dimensional vector.
-        e0 = np.array([state[1], state[2]])
-
-        # Next, we calculate the change in eccentricity (delta_e) by subtracting the current eccentricity from the target eccentricity.
+        # We calculate the change in eccentricity (delta_e) by subtracting the current eccentricity from the target eccentricity.
         # This is done using the numpy's function 'norm' which computes the norm (magnitude) of the difference vector.
-        delta_e = np.linalg.norm(target[0] - e0)
-
-        # Similarly, we compute the current semi-major axis (a0) from the state,
-        # and the change in semi-major axis (delta_a) by subtracting the current semi-major axis from the target semi-major axis.
-        a0 = state[3]
-        delta_a = target[1] - a0
-
-        # Finally, we calculate the reward. The reward is designed to be larger when the spaceship is closer to its target orbit.
+        delta_e = np.linalg.norm(state[1:3])/np.linalg.norm(self.target[0])
+        delta_a = state[3]/(self.target[1]-self.a0)
+        # We calculate the reward. The reward is designed to be larger when the spaceship is closer to its target orbit.
         # It is a function of delta_a and delta_e, such that the reward decreases exponentially as delta_a and delta_e increase.
         # This means the spaceship gets a higher reward for being closer to the target orbit.
         # The terms (2*delta_a/((target[1]-self.a0))) and (delta_e/(self.target[1]) are normalization terms,
         # which adjust the magnitudes of delta_a and delta_e relative to the range of possible semi-major axes and eccentricities.
         # The squaring and exponential functions make sure that the reward changes smoothly and has nice mathematical properties.
-        return np.exp(-(2*delta_a/((target[1]-self.a0)))**2) * np.exp(-(delta_e/(self.target[1])**2))
-
+        return np.exp(-((delta_a)**2 + (delta_e)**2))
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
 
@@ -142,16 +134,21 @@ class SimpleBurnEnv(gym.Env):
         # Update the state with the new position and velocity from the ODE solution.
         self.ivp_state = sol.y[:, -1]
         # Calculate and update various orbital parameters based on the new state.
-        self.state[0] = om.true_anomaly(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
-        self.state[1:3] = om.eccentricity_vector(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
-        self.state[3] = om.semi_major_axis(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
-        self.state[4] = om.time_to_apoapsis(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
+        self.orbit_state[0] = om.true_anomaly(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
+        self.orbit_state[1:3] = om.eccentricity_vector(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
+        self.orbit_state[3] = om.semi_major_axis(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
+        self.orbit_state[4] = om.time_to_apoapsis(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
+
+        self.state[0] = self.orbit_state[0]
+        self.state[1:3] = self.target[0] - self.orbit_state[1:3]
+        self.state[3] = self.target[1] - self.orbit_state[3]
+        self.state[4] = self.orbit_state[4]
         # If the action was to thrust, decrease the amount of remaining thrust.
         if action != 0:
             self.state[5] -= 1
 
         # Calculate the reward for the current state.
-        reward = self.reward(self.state, self.target) - action
+        reward = self.reward(self.state)
         e_norm = np.linalg.norm(self.state[1:3])
 
         # Check termination conditions: either the maximum time has been reached, or the spaceship has achieved its goal,
@@ -169,7 +166,7 @@ class SimpleBurnEnv(gym.Env):
         info =  {}
         return self.state, reward, terminal, truncated, info
 
-    def reset(self, seed=None, options=None, theta=7*np.pi/4, thrusts=None):
+    def reset(self, seed=None, options=None, theta=7*np.pi/4, thrusts=None, target=None):
 # The reset function is called to reset the environment to its initial state.
 
         self.t0 = 0  # Reset the current time to 0.
@@ -191,9 +188,13 @@ class SimpleBurnEnv(gym.Env):
         # Set the initial state for the ODE solver.
         self.ivp_state = np.array([pos[0], pos[1], vel[0], vel[1]])
         # Set the initial state for the simulation.
-        self.state = np.array([nu, e[0], e[1], a, ta, thrusts])
+        self.orbit_state = np.array([nu, e[0], e[1], a, ta])
         # Set the target orbit for the simulation.
-        self.target = om.a_constrained_orbit(self.tbr, r=np.linalg.norm(pos)/self.tbr.r1, a=self.target_a, theta=theta)
+        if target is None:
+            self.target = om.a_constrained_orbit(self.tbr, r=np.linalg.norm(pos)/self.tbr.r1, a=self.target_a, theta=theta)
+        else:
+            self.target = target
+        self.state = np.array([nu, self.target[0][0]-e[0], self.target[0][1]-e[1], self.target[1]-a, ta, thrusts])
         
         info = {}  # The info dictionary can be used to provide additional information about the state of the simulation, but in this case it is empty.
 

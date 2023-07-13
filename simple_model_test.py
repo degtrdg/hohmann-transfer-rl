@@ -12,10 +12,10 @@ env = sbe()
 env.reset()
 
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/5000')
+model = PPO.load(f'{model_dir}/75000')
 
 # Initial orbit
-trajectory = om.orbit_trajectory(env.state[1:3], env.state[3])
+trajectory = om.orbit_trajectory(env.orbit_state[1:3], env.orbit_state[3])
 plt.plot(trajectory[0,:], trajectory[1,:], 'green', alpha=1)
 # Target orbit
 trajectory = om.orbit_trajectory(env.target[0], env.target[1])
@@ -38,7 +38,7 @@ plt.plot(positions[:,0], positions[:,1], 'darkorange', alpha=1)
 plt.scatter(burns[:,0], burns[:,1], color='k', marker='x', linewidth=.5, s=10)
 
 # Final orbit
-trajectory = om.orbit_trajectory(env.state[1:3], env.state[3])
+trajectory = om.orbit_trajectory(env.orbit_state[1:3], env.orbit_state[3])
 print(env.target_a, env.state[3]/env.tbr.r1)
 print(np.linalg.norm(env.target[0]), np.sqrt(env.state[1]**2 + env.state[2]**2))
 plt.plot(trajectory[0,:], trajectory[1,:], 'cyan', alpha=1)
