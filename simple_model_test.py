@@ -13,7 +13,7 @@ env.reset()
 
 model_dir = "models/simple/DQN"
 # model = PPO.load(f'{model_dir}/180000')
-model = PPO.load("saved-models/180000")
+model = PPO.load("saved-models/290000")
 
 # Initial orbit
 trajectory = om.orbit_trajectory(env.orbit_state[1:3], env.orbit_state[3])

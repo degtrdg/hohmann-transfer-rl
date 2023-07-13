@@ -25,7 +25,7 @@ env = sbe()
 env.reset()
 # After we create the env and reset we can add the model with the algo
 # model = DQN('MlpPolicy', env, verbose=1, tau=0.9)
-model = PPO('MlpPolicy', env, verbose=1)
+model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=logdir)
 
 TIMESTAMPS = 5000
 # Train the model and save it
