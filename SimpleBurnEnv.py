@@ -134,7 +134,7 @@ class SimpleBurnEnv(gym.Env):
         # Update the state with the new position and velocity from the ODE solution.
         self.ivp_state = sol.y[:, -1]
         # Calculate and update various orbital parameters based on the new state.
-        self.orbit_state[0] = om.true_anomaly(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
+        self.orbit_state[0] = om.target_relative_anomaly(self.ivp_state[:2], self.target)
         self.orbit_state[1:3] = om.eccentricity_vector(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
         self.orbit_state[3] = om.semi_major_axis(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
         self.orbit_state[4] = om.time_to_apoapsis(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
@@ -167,16 +167,20 @@ class SimpleBurnEnv(gym.Env):
         return self.state, reward, terminal, truncated, info
 
     def reset(self, seed=None, options=None, theta=7*np.pi/4, thrusts=None, target=None):
-# The reset function is called to reset the environment to its initial state.
-
+    # The reset function is called to reset the environment to its initial state.
         self.t0 = 0  # Reset the current time to 0.
 
         # Set the initial position and velocity of the spaceship.
         pos = self.r2_0
         vel = self.v2_0
+
+        if target is None:
+            self.target = om.a_constrained_orbit(self.tbr, r=np.linalg.norm(pos)/self.tbr.r1, a=self.target_a, theta=theta)
+        else:
+            self.target = target
         
         # Calculate various orbital parameters based on the initial position and velocity.
-        nu = om.true_anomaly(pos, vel, self.tbr.mu)
+        nu = om.target_relative_anomaly(pos, self.target)
         e = om.eccentricity_vector(pos, vel, self.tbr.mu)
         a = om.semi_major_axis(pos, vel, self.tbr.mu)
         ta = om.time_to_apoapsis(pos, vel, self.tbr.mu)
@@ -190,10 +194,6 @@ class SimpleBurnEnv(gym.Env):
         # Set the initial state for the simulation.
         self.orbit_state = np.array([nu, e[0], e[1], a, ta])
         # Set the target orbit for the simulation.
-        if target is None:
-            self.target = om.a_constrained_orbit(self.tbr, r=np.linalg.norm(pos)/self.tbr.r1, a=self.target_a, theta=theta)
-        else:
-            self.target = target
         self.state = np.array([nu, self.target[0][0]-e[0], self.target[0][1]-e[1], self.target[1]-a, ta, thrusts])
         
         info = {}  # The info dictionary can be used to provide additional information about the state of the simulation, but in this case it is empty.

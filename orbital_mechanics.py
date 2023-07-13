@@ -51,6 +51,13 @@ def eccentric_anomaly(pos, vel, mu, tol=1e-5):
         E = 2*np.pi + E
     return E
 
+def target_relative_anomaly(pos, target):
+    e = target[0]
+    theta = np.arctan2(pos[1], pos[0]) - np.arctan2(e[1], e[0])
+    if theta < 0:
+        theta += 2*np.pi
+    return theta
+
 
 # Apoapsis and periapsis calculations
 def apoapsis(pos, vel, mu):
