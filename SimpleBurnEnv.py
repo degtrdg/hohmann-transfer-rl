@@ -17,7 +17,6 @@ class SimpleBurnEnv(gym.Env):
         1       Delta eccentricity x    -1     1
         2       Delta eccentricity y    -1     1
         3       Delta semi-major axis   -Inf   Inf
-        
         4       Time to apoapsis        0      Inf
         5       Thrust remaining        0      150
 
@@ -107,6 +106,7 @@ class SimpleBurnEnv(gym.Env):
         # which adjust the magnitudes of delta_a and delta_e relative to the range of possible semi-major axes and eccentricities.
         # The squaring and exponential functions make sure that the reward changes smoothly and has nice mathematical properties.
         return np.exp(-((delta_a)**2 + (delta_e)**2))
+
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
 
@@ -167,7 +167,7 @@ class SimpleBurnEnv(gym.Env):
         return self.state, reward, terminal, truncated, info
 
     def reset(self, seed=None, options=None, theta=None, thrusts=None, target=None):
-    # The reset function is called to reset the environment to its initial state.
+        # The reset function is called to reset the environment to its initial state.
         self.t0 = 0  # Reset the current time to 0.
 
         # Set the initial position and velocity of the spaceship.
@@ -197,7 +197,6 @@ class SimpleBurnEnv(gym.Env):
         self.state = np.array([nu, self.target[0][0]-e[0], self.target[0][1]-e[1], self.target[1]-a, ta, thrusts])
         
         info = {}  # The info dictionary can be used to provide additional information about the state of the simulation, but in this case it is empty.
-
 
         # Return the initial state and the info dictionary.
         return self.state, info
