@@ -1,10 +1,12 @@
 import pygame
 import numpy as np
 from SimpleBurnEnv import SimpleBurnEnv
+import orbital_mechanics as om
 
 TRAIL_COLOR = (255, 0, 0)  # Red color for the trail
 STEP = 5  # Draw a trail dot every 5 frames
 MAX_TRAIL_LENGTH = 500  # Maximum number of points in the trail
+PREDICTED_ORBIT_COLOR = (0, 255, 0)  # Green color for the orbit
 
 # Scale factors for game dimensions and elements
 SCALE_FACTOR = 0.5  # adjust this value to get the right fit on your screen
@@ -51,6 +53,11 @@ while running:
     # Step the environment
     state, reward, done, truncated, info = env.step(action)
 
+    e = env.orbit_state[1:3]
+    a = env.orbit_state[3]
+    orbit = om.orbit_trajectory(e, a) # ellipse
+    orbit = (orbit / env.a0).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
+
     # Store the previous states
     if iteration % STEP == 0 and iteration != 0:
         prev_states.append(rocket_position.copy())
@@ -61,6 +68,9 @@ while running:
     
     # Draw Earth at the center
     pygame.draw.circle(win, BLUE, CENTER_POINT.astype(int), EARTH_RADIUS)
+
+    # Draw the theoretical orbit
+    pygame.draw.lines(win, PREDICTED_ORBIT_COLOR, False, orbit.astype(int), 1)
 
     # Draw the rocket's path
     for point in prev_states:
