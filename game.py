@@ -7,7 +7,9 @@ TRAIL_COLOR = (255, 0, 0)  # Red color for the trail
 STEP = 5  # Draw a trail dot every 5 frames
 MAX_TRAIL_LENGTH = 500  # Maximum number of points in the trail
 PREDICTED_ORBIT_COLOR = (0, 255, 0)  # Green color for the orbit
-TARGET_ORBIT_COLOR = (0, 0, 255)  # Red color for the orbit
+TARGET_ORBIT_COLOR = (0, 0, 200)  # Blue color for the orbit
+# Scaling factor for eccentricity vector
+ECCENTRICITY_SCALE = 200
 
 # Scale factors for game dimensions and elements
 SCALE_FACTOR = 0.5  # adjust this value to get the right fit on your screen
@@ -35,7 +37,7 @@ CENTER_POINT = np.array([WIDTH, HEIGHT]) / 2
 
 # Create the environment
 env = SimpleBurnEnv()
-state, info = env.reset()
+state, info = env.reset(theta=0)
 
 # Run the game loop
 running = True
@@ -58,8 +60,10 @@ while running:
     a = env.orbit_state[3]
     predicted_orbit = om.orbit_trajectory(e, a) # ellipse
     predicted_orbit = (predicted_orbit / env.a0).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
-    target_orbit = om.orbit_trajectory(env.target[0],env.target[1])
+    predicted_eccentricity_vector = e * ECCENTRICITY_SCALE
+    target_orbit = om.orbit_trajectory(env.target[0], env.target[1])
     target_orbit = (target_orbit / env.a0).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
+    target_eccentricity_vector = env.target[0] * ECCENTRICITY_SCALE
 
     # Store the previous states
     if iteration % STEP == 0 and iteration != 0:
@@ -77,6 +81,12 @@ while running:
 
     # Draw the target orbit
     pygame.draw.lines(win, TARGET_ORBIT_COLOR, False, target_orbit.astype(int), 1)
+
+    # Draw the eccentricity vectors
+    pygame.draw.line(win, PREDICTED_ORBIT_COLOR, CENTER_POINT.astype(int), 
+                     (CENTER_POINT + predicted_eccentricity_vector).astype(int), 2)
+    pygame.draw.line(win, TARGET_ORBIT_COLOR, CENTER_POINT.astype(int), 
+                     (CENTER_POINT + target_eccentricity_vector).astype(int), 2)
 
     # Draw the rocket's path
     for point in prev_states:
