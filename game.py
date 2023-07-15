@@ -17,7 +17,7 @@ PADDING = 0.25  # 10% padding
 
 # Game dimensions
 # WIDTH, HEIGHT = int(SCREEN_WIDTH * SCALE_FACTOR), int(SCREEN_HEIGHT * SCALE_FACTOR)
-WIDTH, HEIGHT = int(1000), int(800)
+WIDTH, HEIGHT = int(1000), int(1000)
 
 # Constants for the game
 FPS = 60  # Frames per second
@@ -31,6 +31,11 @@ BLUE = (0, 0, 255)
 # Initialize Pygame
 pygame.init()
 win = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Create font object
+font_size = 16
+font_color = (255, 255, 255)  # White
+font = pygame.font.Font(None, font_size)  # Default font
 
 # Center point for drawing
 CENTER_POINT = np.array([WIDTH, HEIGHT]) / 2
@@ -65,6 +70,22 @@ while running:
     target_orbit = (target_orbit / env.a0).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
     target_eccentricity_vector = env.target[0] * ECCENTRICITY_SCALE
 
+    # Draw text for state variables and environment attributes
+    texts = [
+        f'True anomaly: {env.state[0]}',
+        f'Delta eccentricity x: {env.state[1]}',
+        f'Delta eccentricity y: {env.state[2]}',
+        f'Delta semi-major axis: {env.state[3]}',
+        f'Time to apoapsis: {env.state[4]}',
+        f'Thrust remaining: {env.state[5]}',
+        f'Time step: {env.t0}',
+        f'Reward: {reward}',
+        f'Current eccentricity vector: {env.orbit_state[:2]}',
+        f'Target eccentricity: {env.target[0]}',
+        f'Current semi-major axis length: {env.orbit_state[2]}',
+        f'Target semi-major axis length: {env.target[1]}'
+    ]
+
     # Store the previous states
     if iteration % STEP == 0 and iteration != 0:
         prev_states.append(rocket_position.copy())
@@ -72,6 +93,9 @@ while running:
             prev_states.pop(0)  # Remove the oldest point
         # Clear the screen
         win.fill((0, 0, 0))
+        for i, text in enumerate(texts):
+            text_surface = font.render(text, True, font_color)
+            win.blit(text_surface, (10, 10 + i * (font_size + 5)))  # Padding of 5 between lines
     
     # Draw Earth at the center
     pygame.draw.circle(win, BLUE, CENTER_POINT.astype(int), EARTH_RADIUS)
@@ -87,6 +111,8 @@ while running:
                      (CENTER_POINT + predicted_eccentricity_vector).astype(int), 2)
     pygame.draw.line(win, TARGET_ORBIT_COLOR, CENTER_POINT.astype(int), 
                      (CENTER_POINT + target_eccentricity_vector).astype(int), 2)
+
+
 
     # Draw the rocket's path
     for point in prev_states:
