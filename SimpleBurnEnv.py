@@ -49,8 +49,8 @@ class SimpleBurnEnv(gym.Env):
 
         # The minimum and maximum values for each observation parameter, used to define the bounds of the observation space.
         # They are arrays of 6 values, corresponding to the six parameters outlined in the 'Observation' section.
-        self.min_obs = np.array([0, -1, -1, -np.inf, 0, 0])
-        self.max_obs = np.array([2*np.pi, 1, 1, np.inf, np.inf, 150])
+        self.min_obs = np.array([0, -1, -1, -np.inf, 0])
+        self.max_obs = np.array([2*np.pi, 1, 1, np.inf, 150])
 
         # The maximum time for the simulation. After this time has passed, the simulation will end.
         self.max_t = 10000 
@@ -62,7 +62,7 @@ class SimpleBurnEnv(gym.Env):
         # The action space is discrete and can be either 0 or 1, corresponding to no thrust or full thrust.
         # The observation space is continuous and is defined by the min_obs and max_obs arrays.
         self.action_space = spaces.Discrete(2)
-        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(6,), dtype=np.float64)
+        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(5,), dtype=np.float64)
 
         # This is a reference to an object representing the two-body problem. It provides necessary functions for orbit calculation.
         self.tbr = tbr()
@@ -76,8 +76,6 @@ class SimpleBurnEnv(gym.Env):
         self.nu0 = om.true_anomaly(self.r2_0, self.v2_0, self.tbr.mu)
         self.e0 = om.eccentricity_vector(self.r2_0, self.v2_0, self.tbr.mu)
         self.a0 = om.semi_major_axis(self.r2_0, self.v2_0, self.tbr.mu)
-        self.ta = om.time_to_apoapsis(self.r2_0, self.v2_0, self.tbr.mu)
-
         # The initial amount of thrust available to the spaceship.
         self.thrusts = 150
 
@@ -135,17 +133,17 @@ class SimpleBurnEnv(gym.Env):
         self.ivp_state = sol.y[:, -1]
         # Calculate and update various orbital parameters based on the new state.
         self.orbit_state[0] = om.target_relative_anomaly(self.ivp_state[:2], self.target)
+        if self.orbit_state[0] > np.pi:
+            self.orbit_state[0] -= 2*np.pi
         self.orbit_state[1:3] = om.eccentricity_vector(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
         self.orbit_state[3] = om.semi_major_axis(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
-        self.orbit_state[4] = om.time_to_apoapsis(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
 
         self.state[0] = self.orbit_state[0]
         self.state[1:3] = self.target[0] - self.orbit_state[1:3]
         self.state[3] = self.target[1] - self.orbit_state[3]
-        self.state[4] = self.orbit_state[4]
         # If the action was to thrust, decrease the amount of remaining thrust.
         if action != 0:
-            self.state[5] -= 1
+            self.state[4] -= 1
 
         # Calculate the reward for the current state.
         reward = self.reward(self.state)
@@ -154,7 +152,7 @@ class SimpleBurnEnv(gym.Env):
         # Check termination conditions: either the maximum time has been reached, or the spaceship has achieved its goal,
         # or the spaceship has run out of thrust, or the spaceship's orbit is too eccentric. If any of these conditions is met,
         # the simulation is terminated.
-        if self.t0 >= self.max_t or self.state[3] >= (self.target_a+1)*self.tbr.r1 or e_norm >= .5 or self.state[5] <= 0:
+        if self.t0 >= self.max_t or self.state[3] >= (self.target_a+1)*self.tbr.r1 or e_norm >= .5 or self.state[4] <= 0:
             truncated = True
         else:
             truncated = False
@@ -166,7 +164,7 @@ class SimpleBurnEnv(gym.Env):
         info =  {}
         return self.state, reward, terminal, truncated, info
 
-    def reset(self, seed=None, options=None, theta=None, thrusts=None, target=None):
+    def reset(self, seed=None, options=None, theta=5*np.pi/4, thrusts=None, target=None):
         # The reset function is called to reset the environment to its initial state.
         self.t0 = 0  # Reset the current time to 0.
 
@@ -181,9 +179,10 @@ class SimpleBurnEnv(gym.Env):
         
         # Calculate various orbital parameters based on the initial position and velocity.
         nu = om.target_relative_anomaly(pos, self.target)
+        if nu > np.pi:
+            nu -= 2*np.pi
         e = om.eccentricity_vector(pos, vel, self.tbr.mu)
         a = om.semi_major_axis(pos, vel, self.tbr.mu)
-        ta = om.time_to_apoapsis(pos, vel, self.tbr.mu)
         
         # Check if a specific amount of thrust has been specified for the reset; if not, use the default amount.
         if thrusts is None:
@@ -192,9 +191,9 @@ class SimpleBurnEnv(gym.Env):
         # Set the initial state for the ODE solver.
         self.ivp_state = np.array([pos[0], pos[1], vel[0], vel[1]])
         # Set the initial state for the simulation.
-        self.orbit_state = np.array([nu, e[0], e[1], a, ta])
+        self.orbit_state = np.array([nu, e[0], e[1], a])
         # Set the target orbit for the simulation.
-        self.state = np.array([nu, self.target[0][0]-e[0], self.target[0][1]-e[1], self.target[1]-a, ta, thrusts])
+        self.state = np.array([nu, self.target[0][0]-e[0], self.target[0][1]-e[1], self.target[1]-a, thrusts])
         
         info = {}  # The info dictionary can be used to provide additional information about the state of the simulation, but in this case it is empty.
 
