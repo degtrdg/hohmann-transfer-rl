@@ -7,7 +7,7 @@ TRAIL_COLOR = (255, 0, 0)  # Red color for the trail
 STEP = 5  # Draw a trail dot every 5 frames
 MAX_TRAIL_LENGTH = 500  # Maximum number of points in the trail
 PREDICTED_ORBIT_COLOR = (0, 255, 0)  # Green color for the orbit
-TARGET_ORBIT_COLOR = (0, 0, 200)  # Blue color for the orbit
+TARGET_ORBIT_COLOR = (255, 255, 255)  # White color for the orbit
 # Scaling factor for eccentricity vector
 ECCENTRICITY_SCALE = 200
 
@@ -76,8 +76,7 @@ while running:
         f'Delta eccentricity x: {env.state[1]}',
         f'Delta eccentricity y: {env.state[2]}',
         f'Delta semi-major axis: {env.state[3]}',
-        f'Time to apoapsis: {env.state[4]}',
-        f'Thrust remaining: {env.state[5]}',
+        f'Thrust remaining: {env.state[4]}',
         f'Time step: {env.t0}',
         f'Reward: {reward}',
         f'Current eccentricity vector: {env.orbit_state[:2]}',
@@ -109,10 +108,9 @@ while running:
     # Draw the eccentricity vectors
     pygame.draw.line(win, PREDICTED_ORBIT_COLOR, CENTER_POINT.astype(int), 
                      (CENTER_POINT + predicted_eccentricity_vector).astype(int), 2)
+
     pygame.draw.line(win, TARGET_ORBIT_COLOR, CENTER_POINT.astype(int), 
                      (CENTER_POINT + target_eccentricity_vector).astype(int), 2)
-
-
 
     # Draw the rocket's path
     for point in prev_states:
@@ -121,6 +119,9 @@ while running:
     # Draw the rocket
     rocket_position = env.ivp_state[:2]/((2*env.a0)) * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
     pygame.draw.circle(win, WHITE, rocket_position.astype(int), ROCKET_RADIUS)
+
+    # Draw the line between the origin and the rocket
+    pygame.draw.line(win, TARGET_ORBIT_COLOR, CENTER_POINT.astype(int), rocket_position.astype(int), 2)
 
     # Update the display
     pygame.display.flip()

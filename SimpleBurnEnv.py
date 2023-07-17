@@ -17,8 +17,7 @@ class SimpleBurnEnv(gym.Env):
         1       Delta eccentricity x    -1     1
         2       Delta eccentricity y    -1     1
         3       Delta semi-major axis   -Inf   Inf
-        4       Time to apoapsis        0      Inf
-        5       Thrust remaining        0      150
+        4       Thrust remaining        0      150
 
     Actions:
         Type: Discrete(2)
