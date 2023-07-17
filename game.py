@@ -83,6 +83,7 @@ while running:
         f'Target eccentricity: {env.target[0]}',
         f'Current semi-major axis length: {env.orbit_state[2]}',
         f'Target semi-major axis length: {env.target[1]}'
+        f'Previous action {env.state[5]}'
     ]
 
     # Store the previous states

@@ -18,6 +18,7 @@ class SimpleBurnEnv(gym.Env):
         2       Delta eccentricity y    -1     1
         3       Delta semi-major axis   -Inf   Inf
         4       Thrust remaining        0      150
+        5       Previous action         0      1
 
     Actions:
         Type: Discrete(2)
@@ -192,7 +193,7 @@ class SimpleBurnEnv(gym.Env):
         # Set the initial state for the simulation.
         self.orbit_state = np.array([nu, e[0], e[1], a])
         # Set the target orbit for the simulation.
-        self.state = np.array([nu, self.target[0][0]-e[0], self.target[0][1]-e[1], self.target[1]-a, thrusts])
+        self.state = np.array([nu, self.target[0][0]-e[0], self.target[0][1]-e[1], self.target[1]-a, thrusts, self.state[5] if self.state is not None else 0])
         
         info = {}  # The info dictionary can be used to provide additional information about the state of the simulation, but in this case it is empty.
 
