@@ -22,7 +22,7 @@ WIDTH, HEIGHT = int(1000), int(1000)
 # Constants for the game
 FPS = 60  # Frames per second
 ROCKET_RADIUS = int(5 * SCALE_FACTOR)  # Size of the rocket on screen, scaled
-EARTH_RADIUS = int(50 * SCALE_FACTOR)  # Size of earth on screen, scaled
+EARTH_RADIUS = int(10 * SCALE_FACTOR)  # Size of earth on screen, scaled
 
 # Colors
 WHITE = (255, 255, 255)
@@ -64,10 +64,10 @@ while running:
     e = env.orbit_state[1:3]
     a = env.orbit_state[3]
     predicted_orbit = om.orbit_trajectory(e, a) # ellipse
-    predicted_orbit = (predicted_orbit / env.a0).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
+    predicted_orbit = (predicted_orbit / (2*env.a0)).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
     predicted_eccentricity_vector = e * ECCENTRICITY_SCALE
     target_orbit = om.orbit_trajectory(env.target[0], env.target[1])
-    target_orbit = (target_orbit / env.a0).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
+    target_orbit = (target_orbit / (2*env.a0)).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
     target_eccentricity_vector = env.target[0] * ECCENTRICITY_SCALE
 
     # Draw text for state variables and environment attributes
@@ -119,7 +119,7 @@ while running:
         pygame.draw.circle(win, TRAIL_COLOR, point.astype(int), ROCKET_RADIUS)
 
     # Draw the rocket
-    rocket_position = env.ivp_state[:2]/(env.a0) * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
+    rocket_position = env.ivp_state[:2]/((2*env.a0)) * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
     pygame.draw.circle(win, WHITE, rocket_position.astype(int), ROCKET_RADIUS)
 
     # Update the display
