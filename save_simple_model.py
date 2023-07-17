@@ -32,3 +32,4 @@ TIMESTAMPS = 5000
 for i in range(1,101):
     model.learn(total_timesteps=TIMESTAMPS, reset_num_timesteps=False, progress_bar=False)
     model.save(path=f'{model_dir}/{TIMESTAMPS*i}')
+    print(f"Model saved at {model_dir}/{TIMESTAMPS*i}")
