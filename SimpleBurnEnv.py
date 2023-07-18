@@ -49,8 +49,8 @@ class SimpleBurnEnv(gym.Env):
 
         # The minimum and maximum values for each observation parameter, used to define the bounds of the observation space.
         # They are arrays of 6 values, corresponding to the six parameters outlined in the 'Observation' section.
-        self.min_obs = np.array([0, -1, -1, -np.inf, 0])
-        self.max_obs = np.array([2*np.pi, 1, 1, np.inf, 150])
+        self.min_obs = np.array([0, -1, -1, -np.inf, 0, 0])
+        self.max_obs = np.array([2*np.pi, 1, 1, np.inf, 150, 1])
 
         # The maximum time for the simulation. After this time has passed, the simulation will end.
         self.max_t = 10000 
@@ -62,7 +62,7 @@ class SimpleBurnEnv(gym.Env):
         # The action space is discrete and can be either 0 or 1, corresponding to no thrust or full thrust.
         # The observation space is continuous and is defined by the min_obs and max_obs arrays.
         self.action_space = spaces.Discrete(2)
-        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(5,), dtype=np.float64)
+        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(6,), dtype=np.float64)
 
         # This is a reference to an object representing the two-body problem. It provides necessary functions for orbit calculation.
         self.tbr = tbr()
@@ -88,7 +88,7 @@ class SimpleBurnEnv(gym.Env):
         self.state = None
         self.target = None
 
-    def reward(self, state):
+    def reward(self, state, action):
         # This is the reward function, which calculates a reward value based on the current state and the target state.
         # The reward value is used to guide the spaceship's learning process. 
         # The greater the reward, the more desirable the corresponding action is, from the spaceship's perspective.
@@ -97,13 +97,18 @@ class SimpleBurnEnv(gym.Env):
         # This is done using the numpy's function 'norm' which computes the norm (magnitude) of the difference vector.
         delta_e = np.linalg.norm(state[1:3])/np.linalg.norm(self.target[0])
         delta_a = state[3]/(self.target[1]-self.a0)
+
+        if action == state[5]:
+            continuity_reward = 0.05
+        else:
+            continuity_reward = 0
         # We calculate the reward. The reward is designed to be larger when the spaceship is closer to its target orbit.
         # It is a function of delta_a and delta_e, such that the reward decreases exponentially as delta_a and delta_e increase.
         # This means the spaceship gets a higher reward for being closer to the target orbit.
         # The terms (2*delta_a/((target[1]-self.a0))) and (delta_e/(self.target[1]) are normalization terms,
         # which adjust the magnitudes of delta_a and delta_e relative to the range of possible semi-major axes and eccentricities.
         # The squaring and exponential functions make sure that the reward changes smoothly and has nice mathematical properties.
-        return np.exp(-((delta_a)**2 + (delta_e)**2))
+        return np.exp(-((delta_a)**2 + (delta_e)**2)) + continuity_reward + action*0.05
 
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
@@ -146,7 +151,7 @@ class SimpleBurnEnv(gym.Env):
             self.state[4] -= 1
 
         # Calculate the reward for the current state.
-        reward = self.reward(self.state)
+        reward = self.reward(self.state, action)
         e_norm = np.linalg.norm(self.state[1:3])
 
         # Check termination conditions: either the maximum time has been reached, or the spaceship has achieved its goal,

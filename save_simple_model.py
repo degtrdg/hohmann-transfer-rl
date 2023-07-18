@@ -29,7 +29,7 @@ model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=logdir)
 
 TIMESTAMPS = 5000
 # Train the model and save it
-for i in range(1,101):
+for i in range(1,200):
     model.learn(total_timesteps=TIMESTAMPS, reset_num_timesteps=False, progress_bar=False)
     model.save(path=f'{model_dir}/{TIMESTAMPS*i}')
     print(f"Model saved at {model_dir}/{TIMESTAMPS*i}")

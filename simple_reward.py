@@ -19,7 +19,7 @@ burn_start = 100
 max_t = 1700
 positions = np.empty((max_t,2))
 orbits = np.empty((max_t, 4))
-states = np.empty((max_t,5))
+states = np.empty((max_t,6))
 actions = np.empty(max_t)
 
 while True:
@@ -88,7 +88,7 @@ plt.scatter(target_deltas[:,0], target_deltas[:,1], color='k', marker='x', linew
 
 # Reward plot
 plt.subplot(2,3,3)
-rewards = np.array([env.reward(states[i,:]) for i in range(max_t)])
+rewards = np.array([env.reward(states[i,:], actions[i]) for i in range(max_t)])
 plt.title("Reward")
 plt.plot(rewards, color='blue')
 ax2 = plt.twinx()
@@ -113,7 +113,7 @@ print("orbit state:", env.orbit_state[1:3], np.linalg.norm(env.orbit_state[1:3])
 print("state:", env.state[1:3], np.linalg.norm(env.state[1:3]), env.state[3]/env.tbr.r1)
 print("target", env.target[0], np.linalg.norm(env.target[0]), env.target[1]/env.tbr.r1)
 print("--------------------")
-print("reward:", env.reward(env.state))
+print("reward:", env.reward(env.state, 0))
 print("total reward:", np.sum(rewards))
 print("initial reward:", rewards[0])
 plt.show()
