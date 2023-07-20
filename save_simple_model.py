@@ -1,6 +1,6 @@
 from SimpleBurnEnv import SimpleBurnEnv as sbe
 import gymnasium as gym
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO, DQN
 from stable_baselines3 import A2C
 import os
 import numpy as np
@@ -24,7 +24,7 @@ env = sbe()
 # reset the environment
 env.reset()
 # After we create the env and reset we can add the model with the algo
-# model = DQN('MlpPolicy', env, verbose=1, tau=0.9)
+# model = DQN('MlpPolicy', env, verbose=1, tau=0.9, tensorboard_log=logdir)
 model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=logdir)
 
 TIMESTAMPS = 5000

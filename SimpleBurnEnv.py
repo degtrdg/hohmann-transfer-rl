@@ -98,7 +98,8 @@ class SimpleBurnEnv(gym.Env):
             continuity_reward = 0
         
         # return np.exp(-((delta_e)**2)) + continuity_reward + action*0.1
-        return np.exp(-((delta_e)**2)) +  action*0.3
+        # return (np.exp(-((delta_e * 2)**2)) - np.exp(-4))*3 +  action*0.1
+        return (np.exp(-((delta_e * 2)**2)) - np.exp(-4))*3 + 0.3*self.state[4]/150# +  action*0.1
 
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
@@ -159,7 +160,7 @@ class SimpleBurnEnv(gym.Env):
         # or the spaceship has run out of thrust, or the spaceship's orbit is too eccentric. If any of these conditions is met,
         # the simulation is terminated.
         # Adding 0.1 to both the true anomaly and the e_norm to give it a leeway
-        if self.t0 >= self.max_t or e_norm >= target_e_norm*1.1 or e_angle_diff < 0.17:
+        if self.t0 >= self.max_t or e_norm >= target_e_norm*1.1 or e_angle_diff < -0.17:
         # if self.t0 >= self.max_t or e_norm >= target_e_norm*1.1:
             truncated = True
         else:
