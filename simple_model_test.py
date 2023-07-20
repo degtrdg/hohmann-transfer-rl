@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import orbital_mechanics as om
 from SimpleBurnEnv import SimpleBurnEnv as sbe
 
-
 env = sbe()
 env.reset(theta=5*np.pi/4)
 env.state[5] = 1

@@ -168,7 +168,7 @@ class SimpleBurnEnv(gym.Env):
 
         # Set the initial position and velocity of the spaceship.
         pos = self.r2_0
-        vel = self.v2_0
+        vel = self.v2_0 * 0.95
 
         if target is None:
             self.target = om.a_constrained_orbit(self.tbr, r=np.linalg.norm(pos)/self.tbr.r1, a=self.target_a, theta=theta)
