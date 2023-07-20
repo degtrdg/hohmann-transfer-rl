@@ -145,7 +145,7 @@ class SimpleBurnEnv(gym.Env):
 
         # Calculate the reward for the current state.
         reward = self.reward(self.state, action)
-        e_norm = np.linalg.norm(self.state[1:3])
+        e_norm = np.linalg.norm(self.orbit_state[1:3])
 
         # Check termination conditions: either the maximum time has been reached, or the spaceship has achieved its goal,
         # or the spaceship has run out of thrust, or the spaceship's orbit is too eccentric. If any of these conditions is met,
@@ -168,7 +168,7 @@ class SimpleBurnEnv(gym.Env):
 
         # Set the initial position and velocity of the spaceship.
         pos = self.r2_0
-        vel = self.v2_0 * 0.95
+        vel = self.v2_0
 
         if target is None:
             self.target = om.a_constrained_orbit(self.tbr, r=np.linalg.norm(pos)/self.tbr.r1, a=self.target_a, theta=theta)
