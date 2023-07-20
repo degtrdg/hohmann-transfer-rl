@@ -5,8 +5,8 @@ import orbital_mechanics as om
 from stable_baselines3 import PPO
 
 TRAIL_COLOR = (255, 0, 0)  # Red color for the trail
-STEP = 5  # Draw a trail dot every 5 frames
-MAX_TRAIL_LENGTH = 500  # Maximum number of points in the trail
+STEP = 1  # Draw a trail dot every 5 frames
+MAX_TRAIL_LENGTH = 500 # Maximum number of points in the trail
 PREDICTED_ORBIT_COLOR = (0, 255, 0)  # Green color for the orbit
 TARGET_ORBIT_COLOR = (255, 255, 255)  # White color for the orbit
 # Scaling factor for eccentricity vector
@@ -31,8 +31,8 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 model_dir = "models/simple/DQN"
-# model = PPO.load(f'{model_dir}/500000')
-model = PPO.load(f'{model_dir}/250000')
+model = PPO.load(f'{model_dir}/55000')
+# model = PPO.load(f'{model_dir}/250000')
 
 # Initialize Pygame
 pygame.init()
@@ -91,7 +91,8 @@ while running:
         f'Thrust remaining: {env.state[4]}',
         f'Time step: {env.t0}',
         f'Reward: {reward}',
-        f'Current eccentricity vector: {env.orbit_state[:2]}',
+        f'Current eccentricity vector: {env.orbit_state[1:3]}',
+        f'Current eccentricity vector magnitude: {np.linalg.norm(env.orbit_state[1:3])}',
         f'Target eccentricity: {env.target[0]}',
         f'Current semi-major axis length: {env.orbit_state[2]}',
         f'Target semi-major axis length: {env.target[1]}'
@@ -106,6 +107,7 @@ while running:
             prev_states.pop(0)  # Remove the oldest point
             prev_thrusts.pop(0)
         # Clear the screen
+    if iteration % 5 == 0 and iteration != 0:
         win.fill((0, 0, 0))
         for i, text in enumerate(texts):
             text_surface = font.render(text, True, font_color)

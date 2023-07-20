@@ -27,6 +27,7 @@ EARTH_RADIUS = int(10 * SCALE_FACTOR)  # Size of earth on screen, scaled
 # Colors
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
 
 # Initialize Pygame
 pygame.init()
@@ -47,6 +48,7 @@ state, info = env.reset()
 # Run the game loop
 running = True
 prev_states = []
+prev_thrusts = []
 iteration = 0
 while running:
     # Event handling
@@ -63,6 +65,10 @@ while running:
 
     # Step the environment
     state, reward, done, truncated, info = env.step(action)
+    if done:
+        # Pause the game
+        # running = False
+        break
 
     e = env.orbit_state[1:3]
     a = env.orbit_state[3]
@@ -83,24 +89,26 @@ while running:
         f'Time step: {env.t0}',
         f'Reward: {reward}',
         f'Current eccentricity vector: {env.orbit_state[1:3]}',
+        f'Current eccentricity vector magnitude: {np.linalg.norm(env.orbit_state[1:3])}',
         f'Target eccentricity: {env.target[0]}',
         f'Current semi-major axis length: {env.orbit_state[2]}',
-        f'Target semi-major axis length: {env.target[1]}',
-        f'Previous action {env.state[5]}',
-        f'State 6: {env.state[6]}'
+        f'Target semi-major axis length: {env.target[1]}'
+        f'Previous action {env.state[5]}'
     ]
-
     # Store the previous states
     if iteration % STEP == 0 and iteration != 0:
         prev_states.append(rocket_position.copy())
+        prev_thrusts.append(action)
         if len(prev_states) > MAX_TRAIL_LENGTH:
             prev_states.pop(0)  # Remove the oldest point
+            prev_thrusts.pop(0)
         # Clear the screen
+    if iteration % 5 == 0 and iteration != 0:
         win.fill((0, 0, 0))
         for i, text in enumerate(texts):
             text_surface = font.render(text, True, font_color)
             win.blit(text_surface, (10, 10 + i * (font_size + 5)))  # Padding of 5 between lines
-    
+      
     # Draw Earth at the center
     pygame.draw.circle(win, BLUE, CENTER_POINT.astype(int), EARTH_RADIUS)
 
@@ -118,8 +126,11 @@ while running:
                      (CENTER_POINT + target_eccentricity_vector).astype(int), 2)
 
     # Draw the rocket's path
-    for point in prev_states:
-        pygame.draw.circle(win, TRAIL_COLOR, point.astype(int), ROCKET_RADIUS)
+    for point, thrust in zip(prev_states, prev_thrusts):
+        if thrust == 1:
+            pygame.draw.circle(win, YELLOW, point.astype(int), ROCKET_RADIUS)
+        else:
+            pygame.draw.circle(win, TRAIL_COLOR, point.astype(int), ROCKET_RADIUS)
 
     # Draw the rocket
     rocket_position = env.ivp_state[:2]/((2*env.a0)) * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
