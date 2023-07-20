@@ -97,7 +97,7 @@ class SimpleBurnEnv(gym.Env):
         else:
             continuity_reward = 0
         
-        return np.exp(-((delta_a)**2 + (delta_e)**2)) + continuity_reward + 0.2*state[4]/150
+        return np.exp(-((delta_e)**2)) + continuity_reward
 
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward

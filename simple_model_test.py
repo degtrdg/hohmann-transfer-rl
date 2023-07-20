@@ -13,7 +13,7 @@ env.reset(theta=5*np.pi/4)
 env.state[5] = 1
 
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/750000')
+model = PPO.load(f'{model_dir}/575000')
 # model = PPO.load("saved-models/120000_simple_no_ta")
 
 # Initial orbit
@@ -35,6 +35,7 @@ for i in range(1000):
         plt.scatter(env.ivp_state[0], env.ivp_state[1], color='red', marker='x', s=40)
         break
     positions[i,:] = env.ivp_state[0:2]
+    print(env.reward(env.state, action))
 
 plt.plot(positions[:,0], positions[:,1], 'darkorange', alpha=1)
 if len(burns) > 0:
