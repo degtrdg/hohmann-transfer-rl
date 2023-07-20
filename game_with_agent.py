@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 from SimpleBurnEnv import SimpleBurnEnv
 import orbital_mechanics as om
+from stable_baselines3 import PPO
 
 TRAIL_COLOR = (255, 0, 0)  # Red color for the trail
 STEP = 5  # Draw a trail dot every 5 frames
@@ -27,6 +28,11 @@ EARTH_RADIUS = int(10 * SCALE_FACTOR)  # Size of earth on screen, scaled
 # Colors
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+
+model_dir = "models/simple/DQN"
+# model = PPO.load(f'{model_dir}/500000')
+model = PPO.load(f'{model_dir}/250000')
 
 # Initialize Pygame
 pygame.init()
@@ -47,6 +53,7 @@ state, info = env.reset()
 # Run the game loop
 running = True
 prev_states = []
+prev_thrusts = []
 iteration = 0
 while running:
     # Event handling
@@ -56,10 +63,15 @@ while running:
 
     # Rocket control
     keys = pygame.key.get_pressed()
-    action = 1 if keys[pygame.K_SPACE] else 0
+    action = model.predict(env.state)[0]
 
     # Step the environment
     state, reward, done, truncated, info = env.step(action)
+    if done:
+        # Pause the game
+        # running = False
+        break
+    
 
     e = env.orbit_state[1:3]
     a = env.orbit_state[3]
@@ -89,8 +101,10 @@ while running:
     # Store the previous states
     if iteration % STEP == 0 and iteration != 0:
         prev_states.append(rocket_position.copy())
+        prev_thrusts.append(action)
         if len(prev_states) > MAX_TRAIL_LENGTH:
             prev_states.pop(0)  # Remove the oldest point
+            prev_thrusts.pop(0)
         # Clear the screen
         win.fill((0, 0, 0))
         for i, text in enumerate(texts):
@@ -114,8 +128,11 @@ while running:
                      (CENTER_POINT + target_eccentricity_vector).astype(int), 2)
 
     # Draw the rocket's path
-    for point in prev_states:
-        pygame.draw.circle(win, TRAIL_COLOR, point.astype(int), ROCKET_RADIUS)
+    for point, thrust in zip(prev_states, prev_thrusts):
+        if thrust == 1:
+            pygame.draw.circle(win, YELLOW, point.astype(int), ROCKET_RADIUS)
+        else:
+            pygame.draw.circle(win, TRAIL_COLOR, point.astype(int), ROCKET_RADIUS)
 
     # Draw the rocket
     rocket_position = env.ivp_state[:2]/((2*env.a0)) * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
@@ -134,4 +151,4 @@ while running:
     iteration += 1
 
 # Clean up
-pygame.quit()
+# pygame.quit()
