@@ -49,7 +49,7 @@ class SimpleBurnEnv(gym.Env):
 
         # The minimum and maximum values for each observation parameter, used to define the bounds of the observation space.
         # They are arrays of 6 values, corresponding to the six parameters outlined in the 'Observation' section.
-        self.min_obs = np.array([0, -1, -1, -np.inf, 0, 0, 0])
+        self.min_obs = np.array([0, -1, -1, -np.inf, 0, 0, -np.inf])
         self.max_obs = np.array([2*np.pi, 1, 1, np.inf, 150, 1, np.inf])
 
         # The maximum time for the simulation. After this time has passed, the simulation will end.
@@ -145,12 +145,14 @@ class SimpleBurnEnv(gym.Env):
 
         # Calculate the reward for the current state.
         reward = self.reward(self.state, action)
-        e_norm = np.linalg.norm(self.orbit_state[1:3])
+        # e_norm = np.linalg.norm(self.orbit_state[1:3])
+        e_norm = np.linalg.norm(self.state[1:3])
+        target_e_norm = np.linalg.norm(self.target[0])
 
         # Check termination conditions: either the maximum time has been reached, or the spaceship has achieved its goal,
         # or the spaceship has run out of thrust, or the spaceship's orbit is too eccentric. If any of these conditions is met,
         # the simulation is terminated.
-        if self.t0 >= self.max_t or e_norm >= .6:
+        if self.t0 >= self.max_t or e_norm >= target_e_norm:
             truncated = True
         else:
             truncated = False
