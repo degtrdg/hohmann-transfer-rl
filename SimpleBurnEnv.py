@@ -97,7 +97,8 @@ class SimpleBurnEnv(gym.Env):
         else:
             continuity_reward = 0
         
-        return np.exp(-((delta_e)**2)) + continuity_reward
+        # return np.exp(-((delta_e)**2)) + continuity_reward + action*0.1
+        return np.exp(-((delta_e)**2)) +  action*0.3
 
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
@@ -149,14 +150,22 @@ class SimpleBurnEnv(gym.Env):
         e_norm = np.linalg.norm(self.state[1:3])
         target_e_norm = np.linalg.norm(self.target[0])
 
+        if np.linalg.norm(self.orbit_state[1:3]) < 1e-5:
+            e_angle_diff = 0
+        else:
+            e_angle_diff = np.arctan2(self.orbit_state[2], self.orbit_state[1]) - np.arctan2(self.target[0][1], self.target[0][0])
+
         # Check termination conditions: either the maximum time has been reached, or the spaceship has achieved its goal,
         # or the spaceship has run out of thrust, or the spaceship's orbit is too eccentric. If any of these conditions is met,
         # the simulation is terminated.
-        if self.t0 >= self.max_t or e_norm >= target_e_norm:
+        # Adding 0.1 to both the true anomaly and the e_norm to give it a leeway
+        if self.t0 >= self.max_t or e_norm >= target_e_norm*1.1 or e_angle_diff < 0.17:
+        # if self.t0 >= self.max_t or e_norm >= target_e_norm*1.1:
             truncated = True
         else:
             truncated = False
 
+        # terminal = False
         terminal = truncated
 
         # Return the new state, the reward, and the termination status. The 'info' dictionary can be used to provide additional
