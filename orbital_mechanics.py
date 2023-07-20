@@ -43,7 +43,14 @@ def eccentric_anomaly(pos, vel, mu, tol=1e-5):
         return 0
     center = -(eccentricity_vector(pos, vel, mu) / e) * e * semi_major_axis(pos, vel, mu)
 
-    r = pos - center
+    cosE = (e + np.cos(f)) / (1 + e*np.cos(f))
+    sinE = np.sqrt(1-e**2)*np.sin(f)/(1+e*np.cos(f))
+    E = np.arctan2(sinE, cosE)
+    if E < 0:
+        E = 2*np.pi + E
+    return E
+
+def eccentric_anomaly_from_f(e, f):
     cosE = (e + np.cos(f)) / (1 + e*np.cos(f))
     sinE = np.sqrt(1-e**2)*np.sin(f)/(1+e*np.cos(f))
     E = np.arctan2(sinE, cosE)
@@ -154,3 +161,78 @@ def time_to_apoapsis(pos, vel, mu):
     else:
         # print("t < ta", t, ta)
         return ta - t
+    
+def time_from_apoapsis(pos, vel, mu):
+    a = semi_major_axis(pos, vel, mu)
+    e = eccentricity(pos, vel, mu)
+    ta = time_at_E(a, e, np.pi, mu)
+    t = time_at_state(pos, vel, mu)
+    if t > ta:
+        return t - ta
+    else:
+        return orbit_period(pos, vel, mu) - ta + t
+
+def time_to_E(pos, vel, mu, E):
+    a = semi_major_axis(pos, vel, mu)
+    e = eccentricity(pos, vel, mu)
+    te = time_at_E(a, e, E, mu)
+    t = time_at_state(pos, vel, mu)
+    if t > te:
+        return orbit_period(pos, vel, mu) - t + te
+    else:
+        return te - t
+
+def time_from_E(pos, vel, mu, E):
+    a = semi_major_axis(pos, vel, mu)
+    e = eccentricity(pos, vel, mu)
+    te = time_at_E(a, e, E, mu)
+    t = time_at_state(pos, vel, mu)
+    if t > te:
+        return t - te
+    else:
+        return orbit_period(pos, vel, mu) - te + t
+
+def time_to_target(pos, vel, mu, target, tol=1e-5):
+    e_vec = eccentricity_vector(pos, vel, mu)
+    e = np.linalg.norm(e_vec)
+    target_e = target[0]
+
+    if np.linalg.norm(e_vec) < tol:
+        target_f = np.arctan2(target_e[1], target_e[0]) - np.arctan2(pos[1], pos[0])
+    else:
+        target_f = np.arctan2(target_e[1], target_e[0]) - np.arctan2(e_vec[1], e_vec[0])
+    target_f = -target_f
+
+    if target_f < 0:
+        target_f += 2*np.pi
+
+    target_E = eccentric_anomaly_from_f(e, target_f)
+    tE = time_to_E(pos, vel, mu, target_E)
+    return tE
+
+def time_from_target(pos, vel, mu, target, tol=1e-5):
+    e_vec = eccentricity_vector(pos, vel, mu)
+    e = np.linalg.norm(e_vec)
+    target_e = target[0]
+
+    if np.linalg.norm(e_vec) < tol:
+        target_f = np.arctan2(target_e[1], target_e[0]) - np.arctan2(pos[1], pos[0])
+    else:
+        target_f = np.arctan2(target_e[1], target_e[0]) - np.arctan2(e_vec[1], e_vec[0])
+    target_f = -target_f
+
+    if target_f < 0:
+        target_f += 2*np.pi
+
+    target_E = eccentric_anomaly_from_f(e, target_f)
+    tE = time_from_E(pos, vel, mu, target_E)
+    return tE
+    
+def absolute_target_time(pos, vel, mu, target):
+    t_to = time_to_target(pos, vel, mu, target)
+    t_from = time_from_target(pos, vel, mu, target)
+    if t_to < t_from:
+        return t_to
+    else:
+        return -t_from
+

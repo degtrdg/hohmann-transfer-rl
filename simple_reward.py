@@ -19,7 +19,7 @@ burn_start = 100
 max_t = 1700
 positions = np.empty((max_t,2))
 orbits = np.empty((max_t, 4))
-states = np.empty((max_t,6))
+states = np.empty((max_t,7))
 actions = np.empty(max_t)
 
 while True:
@@ -94,6 +94,11 @@ plt.plot(rewards, color='blue')
 ax2 = plt.twinx()
 ax2.plot(np.cumsum(rewards), color='orange')
 
+# Target time
+plt.subplot(2,3,4)
+plt.title("Target Time")
+plt.plot(states[:,6])
+
 # Thrust remaining
 plt.subplot(2,3,5)
 plt.title("Thrust Remaining")
@@ -101,7 +106,7 @@ plt.plot(states[:,4])
 
 # True anomaly
 plt.subplot(2,3,6)
-plt.title("Relative True Anomaly")
+plt.title("Relative Anomaly")
 plt.plot(states[:,0])
 
 # Info about the orbit

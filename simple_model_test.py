@@ -13,7 +13,7 @@ env.reset(theta=5*np.pi/4)
 env.state[5] = 1
 
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/500000')
+model = PPO.load(f'{model_dir}/750000')
 # model = PPO.load("saved-models/120000_simple_no_ta")
 
 # Initial orbit

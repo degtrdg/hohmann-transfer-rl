@@ -42,7 +42,7 @@ CENTER_POINT = np.array([WIDTH, HEIGHT]) / 2
 
 # Create the environment
 env = SimpleBurnEnv()
-state, info = env.reset(theta=0)
+state, info = env.reset()
 
 # Run the game loop
 running = True
@@ -57,6 +57,9 @@ while running:
     # Rocket control
     keys = pygame.key.get_pressed()
     action = 1 if keys[pygame.K_SPACE] else 0
+    # reset the environment if the 'r' key is pressed
+    if keys[pygame.K_r]:
+        state, info = env.reset()
 
     # Step the environment
     state, reward, done, truncated, info = env.step(action)
@@ -79,11 +82,12 @@ while running:
         f'Thrust remaining: {env.state[4]}',
         f'Time step: {env.t0}',
         f'Reward: {reward}',
-        f'Current eccentricity vector: {env.orbit_state[:2]}',
+        f'Current eccentricity vector: {env.orbit_state[1:3]}',
         f'Target eccentricity: {env.target[0]}',
         f'Current semi-major axis length: {env.orbit_state[2]}',
-        f'Target semi-major axis length: {env.target[1]}'
-        f'Previous action {env.state[5]}'
+        f'Target semi-major axis length: {env.target[1]}',
+        f'Previous action {env.state[5]}',
+        f'State 6: {env.state[6]}'
     ]
 
     # Store the previous states
