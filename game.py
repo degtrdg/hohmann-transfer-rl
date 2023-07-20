@@ -61,14 +61,19 @@ while running:
     action = 1 if keys[pygame.K_SPACE] else 0
     # reset the environment if the 'r' key is pressed
     if keys[pygame.K_r]:
-        state, info = env.reset()
+        env.reset()
+        prev_states = []
+        prev_thrusts = []
 
     # Step the environment
     state, reward, done, truncated, info = env.step(action)
     if done:
         # Pause the game
         # running = False
-        break
+        env.reset()
+        prev_states = []
+        prev_thrusts = []
+        # break
 
     e = env.orbit_state[1:3]
     a = env.orbit_state[3]
@@ -92,7 +97,7 @@ while running:
         f'Current eccentricity vector magnitude: {np.linalg.norm(env.orbit_state[1:3])}',
         f'Target eccentricity: {env.target[0]}',
         f'Current semi-major axis length: {env.orbit_state[2]}',
-        f'Target semi-major axis length: {env.target[1]}'
+        f'Target semi-major axis length: {env.target[1]}\n'
         f'Previous action {env.state[5]}'
     ]
     # Store the previous states

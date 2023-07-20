@@ -31,7 +31,7 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/55000')
+model = PPO.load(f'{model_dir}/180000')
 # model = PPO.load(f'{model_dir}/250000')
 
 # Initialize Pygame
@@ -70,7 +70,10 @@ while running:
     if done:
         # Pause the game
         # running = False
-        break
+        state, info = env.reset()
+        prev_states = []
+        prev_thrusts = []
+        # break
     
 
     e = env.orbit_state[1:3]
