@@ -108,7 +108,9 @@ class SimpleBurnEnv(gym.Env):
         # The terms (2*delta_a/((target[1]-self.a0))) and (delta_e/(self.target[1]) are normalization terms,
         # which adjust the magnitudes of delta_a and delta_e relative to the range of possible semi-major axes and eccentricities.
         # The squaring and exponential functions make sure that the reward changes smoothly and has nice mathematical properties.
-        return np.exp(-((delta_a)**2 + (delta_e)**2)) + continuity_reward + action*0.05
+        # return np.exp(-((delta_a)**2 + (delta_e)**2)) + continuity_reward + action*0.05
+        # incentivize thrusting
+        return np.exp(-((delta_a)**2 + (delta_e)**2)) + continuity_reward*1.2 + action*0.05
 
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
@@ -149,6 +151,7 @@ class SimpleBurnEnv(gym.Env):
         # If the action was to thrust, decrease the amount of remaining thrust.
         if action != 0:
             self.state[4] -= 1
+        self.state[5] = action
 
         # Calculate the reward for the current state.
         reward = self.reward(self.state, action)
@@ -175,7 +178,7 @@ class SimpleBurnEnv(gym.Env):
 
         # Set the initial position and velocity of the spaceship.
         pos = self.r2_0
-        vel = self.v2_0
+        vel = self.v2_0 * 0.95
 
         if target is None:
             self.target = om.a_constrained_orbit(self.tbr, r=np.linalg.norm(pos)/self.tbr.r1, a=self.target_a, theta=theta)
