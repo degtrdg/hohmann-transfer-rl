@@ -49,8 +49,8 @@ class SimpleBurnEnv(gym.Env):
 
         # The minimum and maximum values for each observation parameter, used to define the bounds of the observation space.
         # They are arrays of 6 values, corresponding to the six parameters outlined in the 'Observation' section.
-        self.min_obs = np.array([0, -1, -1, -np.inf, 0, 0, -np.inf])
-        self.max_obs = np.array([2*np.pi, 1, 1, np.inf, 150, 1, np.inf])
+        self.min_obs = np.array([0, -1, -1, -np.inf, 0, -np.inf])
+        self.max_obs = np.array([2*np.pi, 1, 1, np.inf, 1, np.inf])
 
         # The maximum time for the simulation. After this time has passed, the simulation will end.
         self.max_t = 10000 
@@ -62,7 +62,7 @@ class SimpleBurnEnv(gym.Env):
         # The action space is discrete and can be either 0 or 1, corresponding to no thrust or full thrust.
         # The observation space is continuous and is defined by the min_obs and max_obs arrays.
         self.action_space = spaces.Discrete(2)
-        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(7,), dtype=np.float64)
+        self.observation_space = spaces.Box(low=self.min_obs, high=self.max_obs, shape=(6,), dtype=np.float64)
 
         # This is a reference to an object representing the two-body problem. It provides necessary functions for orbit calculation.
         self.tbr = tbr()
@@ -138,11 +138,9 @@ class SimpleBurnEnv(gym.Env):
         self.state[1:3] = self.target[0] - self.orbit_state[1:3]
         self.state[3] = self.target[1] - self.orbit_state[3]
         # If the action was to thrust, decrease the amount of remaining thrust.
-        if action != 0:
-            self.state[4] -= 1
-        self.state[5] = action
+        self.state[4] = action
         # self.state[6] = om.absolute_target_time(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu, self.target)
-        self.state[6] = om.absolute_target_time(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu, self.target)
+        self.state[5] = om.absolute_target_time(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu, self.target)
         # self.state[6] = om.time_at_state(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
 
         # Calculate the reward for the current state.
@@ -204,7 +202,7 @@ class SimpleBurnEnv(gym.Env):
         self.orbit_state = np.array([nu, e[0], e[1], a])
         # Set the target orbit for the simulation.
         self.state = np.array([nu, self.target[0][0]-e[0], self.target[0][1]-e[1], 
-                               self.target[1]-a, thrusts, 0, 
+                               self.target[1]-a, 0, 
                                om.absolute_target_time(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu, self.target)])
         
         info = {}  # The info dictionary can be used to provide additional information about the state of the simulation, but in this case it is empty.
