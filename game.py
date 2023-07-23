@@ -86,19 +86,18 @@ while running:
 
     # Draw text for state variables and environment attributes
     texts = [
-        f'True anomaly: {env.state[0]}',
+        f'Anomaly: {env.state[0]}',
         f'Delta eccentricity x: {env.state[1]}',
         f'Delta eccentricity y: {env.state[2]}',
         f'Delta semi-major axis: {env.state[3]}',
-        f'Thrust remaining: {env.state[4]}',
+        f'Previous action: {env.state[4]}',
         f'Time step: {env.t0}',
         f'Reward: {reward}',
         f'Current eccentricity vector: {env.orbit_state[1:3]}',
         f'Current eccentricity vector magnitude: {np.linalg.norm(env.orbit_state[1:3])}',
         f'Target eccentricity: {env.target[0]}',
-        f'Current semi-major axis length: {env.orbit_state[2]}',
-        f'Target semi-major axis length: {env.target[1]}\n'
-        f'Previous action {env.state[5]}'
+        f'Current semi-major axis length: {env.orbit_state[3]}',
+        f'Target semi-major axis length: {env.target[1]}',
     ]
     # Store the previous states
     if iteration % STEP == 0 and iteration != 0:

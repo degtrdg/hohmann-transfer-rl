@@ -16,41 +16,17 @@ class SimpleBurnEnv(gym.Env):
         0       True anomaly            0      2*pi
         1       Delta eccentricity x    -1     1
         2       Delta eccentricity y    -1     1
-        3       Delta semi-major axis   -Inf   Inf
-        4       Thrust remaining        0      150
-        5       Previous action         0      1
-
-    Actions:
-        Type: Discrete(2)
-        Num   Action
-        0     Thrust (0 or 1)
-    
-    Explanations:
-    State space: 
-        - True anomaly: The angle from the direction of periapsis measured in the direction of motion.
-        - Eccentricity x: The x component of the eccentricity vector (direction towards periapsis).
-        - Eccentricity y: The y component of the eccentricity vector (direction towards periapsis).
-        - Semi-major axis: One half the major axis, and thus runs from the center of the body, 
-          through a focus, and to the perimeter of the orbit.
-        - Time to apoapsis: The time remaining until the spaceship reaches the apoapsis (highest point in the orbit).
-        - Thrust remaining: The remaining amount of thrust.
-
-    Action space: 
-        - Thrust (0 or 1): Thrust can either be off (0) or on (1).
-        
-    Note: The spaceship is considered a reduced mass.
+        3       Delta semi-major axis   0      Inf
+        4       Previous action         0      1
+        5       Target time             -Inf   Inf
     """
     def __init__(self):
-        # TODO: use a symmetric and normalized Box action space
-        # https://stable-baselines3.readthedocs.io/en/master/guide/rl_tips.html
-
-        # Maximum allowable magnitude of an action, currently set to 1000.
         self.max_action = 1000
 
         # The minimum and maximum values for each observation parameter, used to define the bounds of the observation space.
         # They are arrays of 6 values, corresponding to the six parameters outlined in the 'Observation' section.
-        self.min_obs = np.array([0, -1, -1, -np.inf, 0, -np.inf])
-        self.max_obs = np.array([2*np.pi, 1, 1, np.inf, 1, np.inf])
+        self.min_obs = np.array([-np.pi, -1, -1, 0, 0, -np.inf])
+        self.max_obs = np.array([np.pi, 1, 1, np.inf, 1, np.inf])
 
         # The maximum time for the simulation. After this time has passed, the simulation will end.
         self.max_t = 10000 
@@ -88,18 +64,18 @@ class SimpleBurnEnv(gym.Env):
         self.state = None
         self.target = None
 
+        self.offset = np.pi/3
+
     def reward(self, state, action):
         delta_e = np.linalg.norm(state[1:3])/np.linalg.norm(self.target[0])
         delta_a = state[3]/(self.target[1]-self.a0)
 
-        if action == state[5]:
+        if action == state[4]:
             continuity_reward = 0.1
         else:
             continuity_reward = 0
         
-        # return np.exp(-((delta_e)**2)) + continuity_reward + action*0.1
-        # return (np.exp(-((delta_e * 2)**2)) - np.exp(-4))*3 +  action*0.1
-        return (np.exp(-((delta_e * 2)**2)) - np.exp(-4))*3 + 0.3*self.state[4]/150# +  action*0.1
+        return np.exp(-(delta_e**2)) * np.exp(-(delta_a**2))
 
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
@@ -112,9 +88,6 @@ class SimpleBurnEnv(gym.Env):
         # Extract the velocity vector from the current state.
         vel = np.array([self.ivp_state[2], self.ivp_state[3]])
 
-        # Calculate the thrust vector. The direction of the thrust is the same as the direction of the velocity
-        # (i.e., the spaceship thrusts in the direction it is currently moving). The magnitude of the thrust is
-        # determined by the action times the maximum thrust. The action is either 0 (no thrust) or 1 (maximum thrust).
         thrust = vel / np.linalg.norm(vel) * action * self.max_action
         
         # Initial conditions for the ODE (Ordinary Differential Equation) solver, which we will use to
@@ -137,34 +110,25 @@ class SimpleBurnEnv(gym.Env):
         self.state[0] = self.orbit_state[0]
         self.state[1:3] = self.target[0] - self.orbit_state[1:3]
         self.state[3] = self.target[1] - self.orbit_state[3]
-        # If the action was to thrust, decrease the amount of remaining thrust.
         self.state[4] = action
-        # self.state[6] = om.absolute_target_time(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu, self.target)
         self.state[5] = om.absolute_target_time(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu, self.target)
-        # self.state[6] = om.time_at_state(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu)
 
         # Calculate the reward for the current state.
         reward = self.reward(self.state, action)
-        # e_norm = np.linalg.norm(self.orbit_state[1:3])
         e_norm = np.linalg.norm(self.state[1:3])
         target_e_norm = np.linalg.norm(self.target[0])
 
-        if np.linalg.norm(self.orbit_state[1:3]) < 1e-5:
+        if np.linalg.norm(self.orbit_state[1:3]) < 1e-2:
             e_angle_diff = 0
         else:
-            e_angle_diff = np.arctan2(self.orbit_state[2], self.orbit_state[1]) - np.arctan2(self.target[0][1], self.target[0][0])
+            direction = -np.sign(np.cross(self.orbit_state[1:3], self.target[0]))
+            e_angle_diff = direction * np.arccos(np.dot(self.orbit_state[1:3], self.target[0])/(np.linalg.norm(self.orbit_state[1:3])*np.linalg.norm(self.target[0])))
 
-        # Check termination conditions: either the maximum time has been reached, or the spaceship has achieved its goal,
-        # or the spaceship has run out of thrust, or the spaceship's orbit is too eccentric. If any of these conditions is met,
-        # the simulation is terminated.
-        # Adding 0.1 to both the true anomaly and the e_norm to give it a leeway
-        if self.t0 >= self.max_t or e_norm >= target_e_norm*1.1 or e_angle_diff < -0.17:
-        # if self.t0 >= self.max_t or e_norm >= target_e_norm*1.1:
+        if self.t0 >= self.max_t or e_norm >= target_e_norm*1.2 or e_angle_diff < -np.pi/6 or self.state[3] <= -self.tbr.r1*0.7:
             truncated = True
         else:
             truncated = False
 
-        # terminal = False
         terminal = truncated
 
         # Return the new state, the reward, and the termination status. The 'info' dictionary can be used to provide additional
@@ -185,6 +149,10 @@ class SimpleBurnEnv(gym.Env):
         else:
             self.target = target
         
+        pos = np.dot(np.array([[np.cos(self.offset), -np.sin(self.offset)],
+                                [np.sin(self.offset), np.cos(self.offset)]]),self.target[0]/np.linalg.norm(self.target[0]))*np.linalg.norm(pos)
+        vel = self.tbr.circ_velocity(pos)
+
         # Calculate various orbital parameters based on the initial position and velocity.
         nu = om.target_relative_anomaly(pos, self.target)
         if nu > np.pi:

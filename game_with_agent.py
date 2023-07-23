@@ -3,6 +3,7 @@ import numpy as np
 from SimpleBurnEnv import SimpleBurnEnv
 import orbital_mechanics as om
 from stable_baselines3 import PPO
+import sys
 
 TRAIL_COLOR = (255, 0, 0)  # Red color for the trail
 STEP = 1  # Draw a trail dot every 5 frames
@@ -31,8 +32,10 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/180000')
-# model = PPO.load(f'{model_dir}/250000')
+try:
+    model = PPO.load(f'{model_dir}/'+sys.argv[1])
+except:
+    model = PPO.load(f'{model_dir}/5000')
 
 # Initialize Pygame
 pygame.init()
