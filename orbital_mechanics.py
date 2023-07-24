@@ -65,6 +65,15 @@ def target_relative_anomaly(pos, target):
         theta += 2*np.pi
     return theta
 
+def e_angle_diff(pos, vel, mu, target):
+    e = eccentricity_vector(pos, vel, mu)
+    if np.linalg.norm(e) < 1e-2:
+        direction = -np.sign(np.cross(pos, target[0]))
+        e_angle_diff = direction * np.arccos(np.dot(pos, target[0])/(np.linalg.norm(pos)*np.linalg.norm(target[0])))
+    else:
+        direction = -np.sign(np.cross(e, target[0]))
+        e_angle_diff = direction * np.arccos(np.dot(e, target[0])/(np.linalg.norm(e)*np.linalg.norm(target[0])))
+    return e_angle_diff
 
 # Apoapsis and periapsis calculations
 def apoapsis(pos, vel, mu):

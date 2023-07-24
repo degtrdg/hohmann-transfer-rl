@@ -33,7 +33,7 @@ YELLOW = (255, 255, 0)
 
 model_dir = "models/simple/DQN"
 try:
-    model = PPO.load(f'{model_dir}/'+sys.argv[1])
+    model = PPO.load(f'{model_dir}/'+sys.argv[1]+"000")
 except:
     model = PPO.load(f'{model_dir}/5000')
 
@@ -94,15 +94,15 @@ while running:
         f'Delta eccentricity x: {env.state[1]}',
         f'Delta eccentricity y: {env.state[2]}',
         f'Delta semi-major axis: {env.state[3]}',
-        f'Thrust remaining: {env.state[4]}',
+        f'e angle diff: {env.state[4]}',
+        f'Target time: {env.state[5]}',
         f'Time step: {env.t0}',
         f'Reward: {reward}',
         f'Current eccentricity vector: {env.orbit_state[1:3]}',
         f'Current eccentricity vector magnitude: {np.linalg.norm(env.orbit_state[1:3])}',
         f'Target eccentricity: {env.target[0]}',
-        f'Current semi-major axis length: {env.orbit_state[2]}',
+        f'Current semi-major axis length: {env.orbit_state[3]}',
         f'Target semi-major axis length: {env.target[1]}'
-        f'Previous action {env.state[5]}'
     ]
 
     # Store the previous states

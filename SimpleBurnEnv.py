@@ -17,7 +17,7 @@ class SimpleBurnEnv(gym.Env):
         1       Delta eccentricity x    -1     1
         2       Delta eccentricity y    -1     1
         3       Delta semi-major axis   0      Inf
-        4       Previous action         0      1
+        4       e angle diff            -pi    pi
         5       Target time             -Inf   Inf
     """
     def __init__(self):
@@ -25,11 +25,11 @@ class SimpleBurnEnv(gym.Env):
 
         # The minimum and maximum values for each observation parameter, used to define the bounds of the observation space.
         # They are arrays of 6 values, corresponding to the six parameters outlined in the 'Observation' section.
-        self.min_obs = np.array([-np.pi, -1, -1, 0, 0, -np.inf])
-        self.max_obs = np.array([np.pi, 1, 1, np.inf, 1, np.inf])
+        self.min_obs = np.array([-np.pi, -1, -1, -np.inf, -np.pi, -np.inf])
+        self.max_obs = np.array([np.pi, 1, 1, np.inf, np.pi, np.inf])
 
         # The maximum time for the simulation. After this time has passed, the simulation will end.
-        self.max_t = 10000 
+        self.max_t = 20000 
 
         # The starting time for the simulation, set to 0 for the start of the simulation.
         self.t0 = 0 
@@ -69,13 +69,8 @@ class SimpleBurnEnv(gym.Env):
     def reward(self, state, action):
         delta_e = np.linalg.norm(state[1:3])/np.linalg.norm(self.target[0])
         delta_a = state[3]/(self.target[1]-self.a0)
-
-        if action == state[4]:
-            continuity_reward = 0.1
-        else:
-            continuity_reward = 0
         
-        return np.exp(-(delta_e**2)) * np.exp(-(delta_a**2))
+        return np.exp(-((delta_e)**2)) + action*.1
 
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
@@ -110,7 +105,7 @@ class SimpleBurnEnv(gym.Env):
         self.state[0] = self.orbit_state[0]
         self.state[1:3] = self.target[0] - self.orbit_state[1:3]
         self.state[3] = self.target[1] - self.orbit_state[3]
-        self.state[4] = action
+        self.state[4] = om.e_angle_diff(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu, self.target)
         self.state[5] = om.absolute_target_time(self.ivp_state[:2], self.ivp_state[2:4], self.tbr.mu, self.target)
 
         # Calculate the reward for the current state.
@@ -118,13 +113,10 @@ class SimpleBurnEnv(gym.Env):
         e_norm = np.linalg.norm(self.state[1:3])
         target_e_norm = np.linalg.norm(self.target[0])
 
-        if np.linalg.norm(self.orbit_state[1:3]) < 1e-2:
-            e_angle_diff = 0
-        else:
-            direction = -np.sign(np.cross(self.orbit_state[1:3], self.target[0]))
-            e_angle_diff = direction * np.arccos(np.dot(self.orbit_state[1:3], self.target[0])/(np.linalg.norm(self.orbit_state[1:3])*np.linalg.norm(self.target[0])))
-
-        if self.t0 >= self.max_t or e_norm >= target_e_norm*1.2 or e_angle_diff < -np.pi/6 or self.state[3] <= -self.tbr.r1*0.7:
+        if self.t0 >= self.max_t or e_norm >= target_e_norm*1.2 or \
+            (np.linalg.norm(self.orbit_state[1:3]) > 1e-3 and np.abs(self.state[4]) > np.pi/2) or \
+                self.state[3] <= -self.tbr.r1*0.7 or \
+                    self.state[4] < -np.pi/3:
             truncated = True
         else:
             truncated = False

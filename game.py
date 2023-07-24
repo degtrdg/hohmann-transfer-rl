@@ -4,7 +4,7 @@ from SimpleBurnEnv import SimpleBurnEnv
 import orbital_mechanics as om
 
 TRAIL_COLOR = (255, 0, 0)  # Red color for the trail
-STEP = 5  # Draw a trail dot every 5 frames
+STEP = 1  # Draw a trail dot every 5 frames
 MAX_TRAIL_LENGTH = 500  # Maximum number of points in the trail
 PREDICTED_ORBIT_COLOR = (0, 255, 0)  # Green color for the orbit
 TARGET_ORBIT_COLOR = (255, 255, 255)  # White color for the orbit
