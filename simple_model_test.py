@@ -12,7 +12,7 @@ env.reset(theta=5*np.pi/4)
 env.state[5] = 1
 
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/575000')
+model = PPO.load(f'{model_dir}/290000')
 # model = PPO.load("saved-models/120000_simple_no_ta")
 
 # Initial orbit
@@ -22,7 +22,7 @@ plt.plot(trajectory[0,:], trajectory[1,:], 'green', alpha=1)
 trajectory = om.orbit_trajectory(env.target[0], env.target[1])
 plt.plot(trajectory[0,:], trajectory[1,:], 'blue', alpha=1)
 
-positions = np.empty((1000,2))
+positions = np.empty((2000,2))
 burns = []
 for i in range(1000):
     action, _states = model.predict(env.state)
