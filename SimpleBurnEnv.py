@@ -69,8 +69,13 @@ class SimpleBurnEnv(gym.Env):
     def reward(self, state, action):
         delta_e = np.linalg.norm(state[1:3])/np.linalg.norm(self.target[0])
         delta_a = state[3]/(self.target[1]-self.a0)
+
+        if np.linalg.norm(state[1:3]) > np.linalg.norm(self.target[0])*.99:
+            wait_reward = .1
+        else:
+            wait_reward = 0
         
-        return np.exp(-((delta_e)**2)) + action*.1
+        return np.exp(-(delta_e**2 + delta_a**2)) + wait_reward
 
     def step(self, action, dt=10):
         # TODO: Add further terminal conditions and reward
@@ -115,8 +120,8 @@ class SimpleBurnEnv(gym.Env):
 
         if self.t0 >= self.max_t or e_norm >= target_e_norm*1.2 or \
             (np.linalg.norm(self.orbit_state[1:3]) > 1e-3 and np.abs(self.state[4]) > np.pi/2) or \
-                self.state[3] <= -self.tbr.r1*0.7 or \
-                    self.state[4] < -np.pi/3:
+                self.state[3] <= -self.tbr.r1*0.1 or \
+                    self.state[4] < -np.pi/6:
             truncated = True
         else:
             truncated = False

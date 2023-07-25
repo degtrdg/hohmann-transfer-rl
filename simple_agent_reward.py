@@ -10,7 +10,7 @@ env.reset()
 
 # Load model
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/340000')
+model = PPO.load(f'{model_dir}/90000')
 
 plt.figure(figsize=(8,5))
 plt.subplot(2,3,1)
@@ -64,7 +64,7 @@ def reward_space(reward_func):
     r = r[:-1, :-1]
     return e, a, r
 
-e, a, r = reward_space(lambda e,a: np.exp(-((2*e)**2 + a**2)))
+e, a, r = reward_space(lambda e,a: np.exp(-((e)**2 + a**2)))
 r_min, r_max = -np.abs(r).max(), np.abs(r).max()
 
 c = plt.pcolormesh(e, a, r, cmap='RdBu', vmin=r_min, vmax=r_max)

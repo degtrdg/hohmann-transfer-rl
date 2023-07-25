@@ -19,7 +19,7 @@ for i in tqdm(range(1000)):
     trajectory = om.orbit_trajectory(e, a)
     plt.plot(trajectory[0,:], trajectory[1,:], 'darkorange', alpha=0.01)
 
-trajectory = om.orbit_trajectory(env.state[1:3], env.state[3])
+trajectory = om.orbit_trajectory(env.orbit_state[1:3], env.orbit_state[3])
 plt.plot(trajectory[0,:], trajectory[1,:], 'cyan', alpha=1)
 
 ax.set_xticks(major_ticks)
