@@ -13,7 +13,8 @@ TARGET_ORBIT_COLOR = (255, 255, 255)  # White color for the orbit
 ECCENTRICITY_SCALE = 200
 
 # Scale factors for game dimensions and elements
-SCALE_FACTOR = 0.5  # adjust this value to get the right fit on your screen
+# SCALE_FACTOR = 0.5  # adjust this value to get the right fit on your screen
+SCALE_FACTOR = 0.7  # adjust this value to get the right fit on your screen
 PADDING = 0.25  # 10% padding
 
 # Game dimensions
@@ -31,7 +32,7 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 model_dir = "models/simple/DQN"
-model = PPO.load(f'{model_dir}/180000')
+model = PPO.load(f'{model_dir}/120000')
 # model = PPO.load(f'{model_dir}/250000')
 
 # Initialize Pygame
@@ -120,17 +121,17 @@ while running:
     pygame.draw.circle(win, BLUE, CENTER_POINT.astype(int), EARTH_RADIUS)
 
     # Draw the predicted orbit
-    pygame.draw.lines(win, PREDICTED_ORBIT_COLOR, False, predicted_orbit.astype(int), 1)
+    pygame.draw.lines(win, PREDICTED_ORBIT_COLOR, False, predicted_orbit.astype(int), 3)
 
     # Draw the target orbit
-    pygame.draw.lines(win, TARGET_ORBIT_COLOR, False, target_orbit.astype(int), 1)
+    pygame.draw.lines(win, TARGET_ORBIT_COLOR, False, target_orbit.astype(int), 3)
 
     # Draw the eccentricity vectors
     pygame.draw.line(win, PREDICTED_ORBIT_COLOR, CENTER_POINT.astype(int), 
-                     (CENTER_POINT + predicted_eccentricity_vector).astype(int), 2)
+                     (CENTER_POINT + predicted_eccentricity_vector).astype(int), 5)
 
     pygame.draw.line(win, TARGET_ORBIT_COLOR, CENTER_POINT.astype(int), 
-                     (CENTER_POINT + target_eccentricity_vector).astype(int), 2)
+                     (CENTER_POINT + target_eccentricity_vector).astype(int), 5)
 
     # Draw the rocket's path
     for point, thrust in zip(prev_states, prev_thrusts):
@@ -144,7 +145,7 @@ while running:
     pygame.draw.circle(win, WHITE, rocket_position.astype(int), ROCKET_RADIUS)
 
     # Draw the line between the origin and the rocket
-    pygame.draw.line(win, TARGET_ORBIT_COLOR, CENTER_POINT.astype(int), rocket_position.astype(int), 2)
+    pygame.draw.line(win, TARGET_ORBIT_COLOR, CENTER_POINT.astype(int), rocket_position.astype(int), 3)
 
     # Update the display
     pygame.display.flip()
