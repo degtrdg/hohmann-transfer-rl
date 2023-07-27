@@ -78,11 +78,17 @@ while running:
     e = env.orbit_state[1:3]
     a = env.orbit_state[3]
     predicted_orbit = om.orbit_trajectory(e, a) # ellipse
-    predicted_orbit = (predicted_orbit / (2*env.a0)).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
+    predicted_orbit = (predicted_orbit / (2*env.a0)).T * (CENTER_POINT * (1 - 2 * PADDING))
+    predicted_orbit[:,0] = CENTER_POINT[0] + predicted_orbit[:,0]
+    predicted_orbit[:,1] = CENTER_POINT[1] - predicted_orbit[:,1]
     predicted_eccentricity_vector = e * ECCENTRICITY_SCALE
+    predicted_eccentricity_vector[1] = -predicted_eccentricity_vector[1]
     target_orbit = om.orbit_trajectory(env.target[0], env.target[1])
-    target_orbit = (target_orbit / (2*env.a0)).T * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
+    target_orbit = (target_orbit / (2*env.a0)).T * (CENTER_POINT * (1 - 2 * PADDING))
+    target_orbit[:,0] = CENTER_POINT[0] + target_orbit[:,0]
+    target_orbit[:,1] = CENTER_POINT[1] - target_orbit[:,1]
     target_eccentricity_vector = env.target[0] * ECCENTRICITY_SCALE
+    target_eccentricity_vector[1] = -target_eccentricity_vector[1]
 
     # Draw text for state variables and environment attributes
     texts = [
@@ -137,7 +143,9 @@ while running:
             pygame.draw.circle(win, TRAIL_COLOR, point.astype(int), ROCKET_RADIUS)
 
     # Draw the rocket
-    rocket_position = env.ivp_state[:2]/((2*env.a0)) * (CENTER_POINT * (1 - 2 * PADDING)) + CENTER_POINT
+    rocket_position = env.ivp_state[:2]/((2*env.a0)) * (CENTER_POINT * (1 - 2 * PADDING))
+    rocket_position[0] = CENTER_POINT[0] + rocket_position[0]
+    rocket_position[1] = CENTER_POINT[1] - rocket_position[1]
     pygame.draw.circle(win, WHITE, rocket_position.astype(int), ROCKET_RADIUS)
 
     # Draw the line between the origin and the rocket
